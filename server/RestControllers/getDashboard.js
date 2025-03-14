@@ -5,7 +5,7 @@ const {
   getTaskStats, getCompletedTasks,
   getOverdueTasks, getTasksCloseToDeadline,
   getPastDeals
-} = require("./constants");
+} = require("../constants");
 
 const getDashboard = async (req, res) => {
   try {
