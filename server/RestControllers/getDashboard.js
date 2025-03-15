@@ -9,14 +9,28 @@ const {
 
 const getDashboard = async (req, res) => {
   try {
-    const [[totalSales], [totalIncome], [totalCustomers], [completionRate], [taskStats], 
-    [completedTasks], [overdueTasks], tasksCloseToDeadline, pastDeals] = await Promise.all([
-      db.query(getTotalSales), db.query(getTotalIncome),
-      db.query(getTotalCustomers), db.query(getCompletionRate),
-      db.query(getTaskStats), db.query(getCompletedTasks),
-      db.query(getOverdueTasks), db.query(getTasksCloseToDeadline),
+    const results = await Promise.all([
+      db.query(getTotalSales),
+      db.query(getTotalIncome),
+      db.query(getTotalCustomers),
+      db.query(getCompletionRate),
+      db.query(getTaskStats),
+      db.query(getCompletedTasks),
+      db.query(getOverdueTasks),
+      db.query(getTasksCloseToDeadline),
       db.query(getPastDeals)
     ]);
+
+    // Extract data from stored procedure results
+    const [[totalSales]] = results[0];
+    const [[totalIncome]] = results[1];
+    const [[totalCustomers]] = results[2];
+    const [[completionRate]] = results[3];
+    const taskStats = results[4];
+    const [[completedTasks]] = results[5];
+    const [[overdueTasks]] = results[6];
+    const tasksCloseToDeadline = results[7];
+    const pastDeals = results[8];
 
     res.json({
       totalSales: totalSales.totalSales,
@@ -35,4 +49,3 @@ const getDashboard = async (req, res) => {
 };
 
 module.exports = { getDashboard };
-

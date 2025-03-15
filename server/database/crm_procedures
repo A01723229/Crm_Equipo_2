@@ -1,0 +1,88 @@
+USE CRM_DB;
+GO
+
+-- Get Total Sales
+CREATE PROCEDURE GetTotalSales
+AS
+BEGIN
+    SELECT COUNT(*) AS totalSales FROM Deal;
+END;
+GO
+
+-- Get Total Income
+CREATE PROCEDURE GetTotalIncome
+AS
+BEGIN
+    SELECT SUM(DealValue) AS totalIncome FROM Deal;
+END;
+GO
+
+-- Get Total Customers
+CREATE PROCEDURE GetTotalCustomers
+AS
+BEGIN
+    SELECT COUNT(*) AS totalCustomers FROM Customer;
+END;
+GO
+
+-- Get Completion Rate
+CREATE PROCEDURE GetCompletionRate
+AS
+BEGIN
+    SELECT 
+        (COUNT(CASE WHEN Status = 'Completed' THEN 1 END) * 100.0 / COUNT(*)) 
+        AS completionRate 
+    FROM Task;
+END;
+GO
+
+-- Get Task Stats by Priority
+CREATE PROCEDURE GetTaskStats
+AS
+BEGIN
+    SELECT Priority, COUNT(*) AS count FROM Task GROUP BY Priority;
+END;
+GO
+
+-- Get Completed Tasks
+CREATE PROCEDURE GetCompletedTasks
+AS
+BEGIN
+    SELECT COUNT(*) AS completedTasks FROM Task WHERE Status = 'Completed';
+END;
+GO
+
+-- Get Overdue Tasks
+CREATE PROCEDURE GetOverdueTasks
+AS
+BEGIN
+    SELECT COUNT(*) AS overdueTasks FROM Task 
+    WHERE DeadLine < GETDATE() AND Status != 'Completed';
+END;
+GO
+
+-- Get Tasks Close to Deadline
+CREATE PROCEDURE GetTasksCloseToDeadline
+AS
+BEGIN
+    SELECT Title, DeadLine FROM Task 
+    WHERE DeadLine BETWEEN GETDATE() AND DATEADD(DAY, 7, GETDATE());
+END;
+GO
+
+-- Get Past Deals
+CREATE PROCEDURE GetPastDeals
+AS
+BEGIN
+    SELECT 
+        c.ClientName, 
+        d.DealValue, 
+        d.Comission, 
+        d.DeadLine, 
+        d.PaymentStatus 
+    FROM Deal d 
+    INNER JOIN Customer c ON d.CustomerID = c.CustomerID 
+    ORDER BY d.DeadLine DESC 
+    OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
+END;
+GO
