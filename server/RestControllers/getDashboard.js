@@ -1,4 +1,4 @@
-const sql = require("mssql"); // Make sure you're using SQL Server driver
+const sql = require("mssql");
 const db = require("../database/db.js");
 
 const {
@@ -11,7 +11,7 @@ const {
 
 const getDashboard = async (req, res) => {
   try {
-    const pool = await db.poolPromise; // Get SQL Server connection
+    const pool = await db.poolPromise; 
 
     // Execute stored procedures
     const results = await Promise.all([

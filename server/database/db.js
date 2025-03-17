@@ -7,8 +7,8 @@ const config = {
   server: dbHost, 
   database: dbName,
   options: {
-    encrypt: false, // Set to false if not using SSL
-    trustServerCertificate: true, // Needed for self-signed certs
+    encrypt: false,
+    trustServerCertificate: true,
   },
 };
 
