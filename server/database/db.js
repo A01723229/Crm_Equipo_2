@@ -1,15 +1,29 @@
-const mysql = require("mysql2");
-const { dbHost, dbPort, dbUser, dbPass, dbName } = require("../constants");
+const sql = require("mssql");
+const { dbHost, dbUser, dbPass, dbName } = require("../constants");
 
-const pool = mysql.createPool({
-  host: dbHost,
-  port: dbPort,
+const config = {
   user: dbUser,
   password: dbPass,
+  server: dbHost, 
   database: dbName,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+  options: {
+    encrypt: false, // Set to false if not using SSL
+    trustServerCertificate: true, // Needed for self-signed certs
+  },
+};
 
-module.exports = pool.promise();
+const poolPromise = new sql.ConnectionPool(config)
+  .connect()
+  .then(pool => {
+    console.log("Connected to SQL Server");
+    return pool;
+  })
+  .catch(err => {
+    console.error("Database connection failed", err);
+    process.exit(1);
+  });
+
+module.exports = {
+  sql,
+  poolPromise,
+};

@@ -1,4 +1,6 @@
+const sql = require("mssql"); // Make sure you're using SQL Server driver
 const db = require("../database/db.js");
+
 const {
   getTotalSales, getTotalIncome,
   getTotalCustomers, getCompletionRate,
@@ -9,42 +11,46 @@ const {
 
 const getDashboard = async (req, res) => {
   try {
+    const pool = await db.poolPromise; // Get SQL Server connection
+
+    // Execute stored procedures
     const results = await Promise.all([
-      db.query(getTotalSales),
-      db.query(getTotalIncome),
-      db.query(getTotalCustomers),
-      db.query(getCompletionRate),
-      db.query(getTaskStats),
-      db.query(getCompletedTasks),
-      db.query(getOverdueTasks),
-      db.query(getTasksCloseToDeadline),
-      db.query(getPastDeals)
+      pool.request().execute("GetTotalSales"),
+      pool.request().execute("GetTotalIncome"),
+      pool.request().execute("GetTotalCustomers"),
+      pool.request().execute("GetCompletionRate"),
+      pool.request().execute("GetTaskStats"),
+      pool.request().execute("GetCompletedTasks"),
+      pool.request().execute("GetOverdueTasks"),
+      pool.request().execute("GetTasksCloseToDeadline"),
+      pool.request().execute("GetPastDeals")
     ]);
 
-    // Extract data from stored procedure results
-    const [[totalSales]] = results[0];
-    const [[totalIncome]] = results[1];
-    const [[totalCustomers]] = results[2];
-    const [[completionRate]] = results[3];
-    const taskStats = results[4];
-    const [[completedTasks]] = results[5];
-    const [[overdueTasks]] = results[6];
-    const tasksCloseToDeadline = results[7];
-    const pastDeals = results[8];
+    // Extract data correctly from SQL Server response
+    const totalSales = results[0].recordset[0]?.totalSales || 0;
+    const totalIncome = results[1].recordset[0]?.totalIncome || 0;
+    const totalCustomers = results[2].recordset[0]?.totalCustomers || 0;
+    const completionRate = results[3].recordset[0]?.completionRate || 0;
+    const taskStats = results[4].recordset;
+    const completedTasks = results[5].recordset[0]?.completedTasks || 0;
+    const overdueTasks = results[6].recordset[0]?.overdueTasks || 0;
+    const tasksCloseToDeadline = results[7].recordset;
+    const pastDeals = results[8].recordset;
 
     res.json({
-      totalSales: totalSales.totalSales,
-      totalIncome: totalIncome.totalIncome,
-      totalCustomers: totalCustomers.totalCustomers,
-      completionRate: completionRate.completionRate,
+      totalSales,
+      totalIncome,
+      totalCustomers,
+      completionRate,
       taskStats,
-      completedTasks: completedTasks.completedTasks,
-      overdueTasks: overdueTasks.overdueTasks,
+      completedTasks,
+      overdueTasks,
       tasksCloseToDeadline,
       pastDeals
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Dashboard Query Error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
