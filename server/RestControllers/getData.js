@@ -7,9 +7,9 @@ const {
   getTaskStats, getCompletedTasks,
   getOverdueTasks, getTasksCloseToDeadline,
   getPastDeals
-} = require("../constants");
+} = require("../constants.js");
 
-const getDashboard = async (req, res) => {
+const getData = async (req, res) => {
   try {
     const pool = await db.poolPromise; 
 
@@ -49,9 +49,9 @@ const getDashboard = async (req, res) => {
       pastDeals
     });
   } catch (err) {
-    console.error("Dashboard Query Error:", err);
+    console.error("Data Query Error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-module.exports = { getDashboard };
+module.exports = { getData };

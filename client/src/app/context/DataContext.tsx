@@ -56,7 +56,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       try {
-        const res = await fetch("http://localhost:3001/api/dashboard");
+        const res = await fetch("http://localhost:3001/api/data");
         if (!res.ok) throw new Error("Failed to fetch dashboard data");
         const jsonData: Data = await res.json();
         setData(jsonData);
