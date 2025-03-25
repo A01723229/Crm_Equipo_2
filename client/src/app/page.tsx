@@ -1,141 +1,144 @@
 'use client';
-import { useEffect, useState } from "react";
+import { useUser } from './context/UserContext';
+import { useData } from './context/DataContext';
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-
-interface TaskStat {
-  value: number;
-  color: string;
-}
-
-interface PastDeal {
-  ClientName: string;
-  DealValue: number;
-  Comission: number;
-  DeadLine: string;
-  PaymentStatus: string;
-}
-
-interface DashboardData {
-  totalSales: number;
-  totalIncome: number;
-  totalCustomers: number;
-  completionRate: number;
-  taskStats: Record<string, TaskStat[]>;
-  completedTasks: number;
-  overdueTasks: number;
-  tasksCloseToDeadline: { title: string; deadline: string }[];
-  pastDeals: PastDeal[];
-}
+import LogInBox from './components/loginBox';
 
 export default function Dashboard() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useUser();
+  const { data, loading, error } = useData();
+  const isUser = user?.isLogin;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("http://localhost:3001/api/dashboard");
-        if (!res.ok) throw new Error("Failed to fetch data");
-        const jsonData: DashboardData = await res.json();
-        setData(jsonData);
-      } catch (err) {
-        console.error("Error fetching dashboard data:", err);
-        setError("Failed to load data");
-      }
-    };
+  if (!isUser) return <LogInBox />;
 
-    fetchData();
-  }, []);
+  if (loading) return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md"></div>;
 
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!data) return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md"></div>;
+
+  if (!data) return <div className="text-red-500">No data available</div>;
 
   const {
-    totalSales = 0,
-    totalIncome = 0,
-    totalCustomers = 0,
-    completionRate = 0,
-    taskStats = {},
-    completedTasks = 0,
-    overdueTasks = 0,
-    tasksCloseToDeadline = [],
-    pastDeals = [],
+    totalSales,
+    totalIncome,
+    totalCustomers,
+    completionRate,
+    taskStats,
+    completedTasks,
+    overdueTasks,
+    tasksCloseToDeadline,
+    pastDeals,
   } = data;
 
   return (
-    <div className="p-20 grid grid-cols-1 lg:grid-cols-3 gap-6 bg-gray-100 h-full w-full">
-      <div className="lg:col-span-2 grid grid-cols-2 gap-4">
-        <div className="border p-4 rounded-lg shadow bg-white">
-          <h2 className="text-gray-700 text-lg font-bold">Total Sales</h2>
-          <p className="text-2xl text-black font-bold">${totalSales.toLocaleString()}</p>
+    <div className="p-8 pt-20 bg-gray-100 min-h-screen space-y-6 pl-20">
+      {/* TOP KPI */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white p-6 rounded-lg shadow text-center">
+          <h3 className="text-gray-700 font-bold">Total Sales</h3>
+          <p className="text-2xl text-black font-semibold">{totalSales.toLocaleString()}</p>
         </div>
-        <div className="border p-4 rounded-lg shadow bg-white">
-          <h2 className="text-gray-700 text-lg font-bold">Total Income</h2>
-          <p className="text-2xl text-black font-bold">${totalIncome.toLocaleString()}</p>
+        <div className="bg-white p-6 rounded-lg shadow text-center">
+          <h3 className="text-gray-700 font-bold">Total Income</h3>
+          <p className="text-2xl text-black font-semibold">${totalIncome.toLocaleString()}</p>
         </div>
-        <div className="border p-4 rounded-lg shadow bg-white">
-          <h2 className="text-gray-700 text-lg font-bold">Total Customers</h2>
-          <p className="text-2xl text-black font-bold">{totalCustomers.toLocaleString()}</p>
+        <div className="bg-white p-6 rounded-lg shadow text-center">
+          <h3 className="text-gray-700 font-bold">Total Customers</h3>
+          <p className="text-2xl text-black font-semibold">{totalCustomers.toLocaleString()}</p>
         </div>
-        <div className="border p-4 rounded-lg shadow bg-white">
-          <h2 className="text-gray-700 text-lg font-bold">Completion Rate</h2>
-          <p className="text-2xl text-black font-bold">{completionRate.toFixed(2)}%</p>
-        </div>
-      </div>
-
-      <div className="lg:col-span-1 border p-4 rounded-lg shadow bg-white">
-        <h3 className="text-gray-700 text-lg font-bold">Task Overview</h3>
-        <div className="flex justify-between mt-2">
-          <div>
-            <p className="text-gray-500">Completed</p>
-            <p className="text-xl text-black font-bold">{completedTasks}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Overdue</p>
-            <p className="text-xl text-black font-bold">{overdueTasks}</p>
-          </div>
+        <div className="bg-white p-6 rounded-lg shadow text-center">
+          <h3 className="text-gray-700 font-bold">Completion Rate</h3>
+          <p className="text-2xl text-black font-semibold">{completionRate.toFixed(2)}%</p>
         </div>
       </div>
 
-      <div className="lg:col-span-2 border p-4 rounded-lg shadow bg-white">
-        <h3 className="text-gray-700 text-lg font-bold">Tasks Close to Deadline</h3>
-        <ul>
+      {/* KEY PERFORMANCE */}
+      <div className="bg-white p-6 rounded-lg shadow space-y-4">
+        <h3 className="text-gray-700 font-bold text-lg">Key Performance Indicators</h3>
+        <div className="flex gap-2 text-sm">
+          <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full">Critical: {taskStats?.Critical?.length || 0}</span>
+          <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">High: {taskStats?.High?.length || 0}</span>
+          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">Low: {taskStats?.Low?.length || 0}</span>
+        </div>
+
+        {/* Task Stats Pie */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {Object.entries(taskStats).map(([stage, stats], index) => (
+            <div key={index} className="text-center">
+              <h4 className="font-semibold">{stage}</h4>
+              <PieChart width={180} height={180}>
+                <Pie
+                  data={Array.isArray(stats) ? stats : []}
+                  dataKey="value"
+                  outerRadius={70}
+                  innerRadius={35}
+                  paddingAngle={3}
+                >
+                  {Array.isArray(stats) && stats.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mt-6">
+          <div className="bg-gray-50 p-4 rounded shadow">
+            <h4 className="text-gray-700 font-bold">Completed Tasks This Month</h4>
+            <p className="text-2xl text-black font-semibold">{completedTasks}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded shadow">
+            <h4 className="text-gray-700 font-bold">Overdue Tasks Count</h4>
+            <p className="text-2xl text-black font-semibold">{overdueTasks}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* TASKS CLOSE TO DEADLINE */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-gray-700 font-bold text-lg">Tasks Close to Deadline</h3>
+        <ul className="divide-y mt-4 text-black">
           {tasksCloseToDeadline.length > 0 ? (
             tasksCloseToDeadline.map((task, index) => (
-              <li key={index} className="text-gray-600">{task.title} - {new Date(task.deadline).toLocaleDateString()}</li>
+              <li key={index} className="py-2 flex justify-between">
+                <span>{task.title}</span>
+                <span className="text-black">{new Date(task.deadline).toLocaleDateString()}</span>
+              </li>
             ))
           ) : (
-            <p className="text-gray-500">No upcoming deadlines</p>
+            <li className="py-2 text-black">No upcoming deadlines</li>
           )}
         </ul>
       </div>
 
-      <div className="lg:col-span-3 border p-4 rounded-lg shadow bg-white">
-        <h3 className="text-gray-700 text-lg font-bold">Past Deals</h3>
-        <table className="w-full text-black border-collapse border mt-2">
+      {/* PAST DEALS */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-gray-700 font-bold text-lg">Past Deals</h3>
+        <table className="w-full mt-4 text-left border border-gray-200 text-black">
           <thead>
-            <tr>
-              <th className="border p-2">Client</th>
-              <th className="border p-2">Deal</th>
-              <th className="border p-2">Commission</th>
-              <th className="border p-2">Date</th>
-              <th className="border p-2">Status</th>
+            <tr className="bg-gray-50">
+              <th className="p-2 border">Client</th>
+              <th className="p-2 border">Deal</th>
+              <th className="p-2 border">Commission</th>
+              <th className="p-2 border">Date</th>
+              <th className="p-2 border">Status</th>
             </tr>
           </thead>
           <tbody>
             {pastDeals.length > 0 ? (
               pastDeals.map((deal, index) => (
-                <tr key={index}>
-                  <td className="border p-2">{deal.ClientName}</td>
-                  <td className="border p-2">${deal.DealValue.toLocaleString()}</td>
-                  <td className="border p-2">${deal.Comission.toLocaleString()}</td>
-                  <td className="border p-2">{new Date(deal.DeadLine).toLocaleDateString()}</td>
-                  <td className="border p-2">{deal.PaymentStatus}</td>
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="p-2 border">{deal.ClientName}</td>
+                  <td className="p-2 border">${deal.DealValue.toLocaleString()}</td>
+                  <td className="p-2 border">${deal.Comission.toLocaleString()}</td>
+                  <td className="p-2 border">{new Date(deal.DeadLine).toLocaleDateString()}</td>
+                  <td className="p-2 border">{deal.PaymentStatus}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center p-2 text-gray-500">No past deals</td>
+                <td colSpan={5} className="p-4 text-center text-black">No past deals</td>
               </tr>
             )}
           </tbody>
