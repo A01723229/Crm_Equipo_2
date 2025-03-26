@@ -14,26 +14,26 @@ const postLogin = async (req, res) => {
     const result = await pool
       .request()
       .input("email", sql.VarChar, email)
-      .query("SELECT * FROM [User] WHERE Email = @email");
+      .query("SELECT * FROM Seller WHERE Email = @email");
 
-    const user = result.recordset[0];
+    const seller = result.recordset[0];
 
-    if (!user) {
+    if (!seller) {
       return res.status(401).json({ error: "Incorrect credentials." });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.Password);
+    const passwordMatch = await bcrypt.compare(password, seller.Password);
     if (!passwordMatch) {
       return res.status(401).json({ error: "Incorrect credentials." });
     }
 
     res.json({
       message: "Login successful.",
-      user: {
-        id: user.UserID,
-        email: user.Email,
-        role: user.Role,
-        company: user.Company
+      seller: {
+        name: seller.SellerName,
+        email: seller.Email,
+        role: seller.Role,
+        company: seller.Company
       }
     });
   } catch (error) {

@@ -1,70 +1,85 @@
 USE CRM_DB;
 
--- Get Total Sales
-CREATE PROCEDURE GetTotalSales
+-- Get Total Sales (Number of Deals)
+CREATE OR ALTER PROCEDURE GetTotalSales
 AS
 BEGIN
+    SET NOCOUNT ON;
     SELECT COUNT(*) AS totalSales FROM Deal;
 END;
 
--- Get Total Income
-CREATE PROCEDURE GetTotalIncome
+-- Get Total Income (Sum of Deal Values)
+CREATE OR ALTER PROCEDURE GetTotalIncome
 AS
 BEGIN
+    SET NOCOUNT ON;
     SELECT SUM(DealValue) AS totalIncome FROM Deal;
 END;
 
--- Get Total Customers
-CREATE PROCEDURE GetTotalCustomers
+-- Get Total Clients (was Customer)
+CREATE OR ALTER PROCEDURE GetTotalClients
 AS
 BEGIN
-    SELECT COUNT(*) AS totalCustomers FROM Customer;
+    SET NOCOUNT ON;
+    SELECT COUNT(*) AS totalClients FROM Client;
 END;
 
--- Get Completion Rate
-CREATE PROCEDURE GetCompletionRate
+-- Get Completion Rate (Completed Tasks %)
+CREATE OR ALTER PROCEDURE GetCompletionRate
 AS
 BEGIN
+    SET NOCOUNT ON;
     SELECT 
-        (COUNT(CASE WHEN Status = 'Completed' THEN 1 END) * 100.0 / COUNT(*)) 
+        (COUNT(CASE WHEN Status = 'Completed' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0)) 
         AS completionRate 
     FROM Task;
 END;
 
 -- Get Task Stats by Priority
-CREATE PROCEDURE GetTaskStats
+CREATE OR ALTER PROCEDURE GetTaskStats
 AS
 BEGIN
-    SELECT Priority, COUNT(*) AS count FROM Task GROUP BY Priority;
+    SET NOCOUNT ON;
+    SELECT Priority, COUNT(*) AS count 
+    FROM Task 
+    GROUP BY Priority;
 END;
 
 -- Get Completed Tasks
-CREATE PROCEDURE GetCompletedTasks
+CREATE OR ALTER PROCEDURE GetCompletedTasks
 AS
 BEGIN
-    SELECT COUNT(*) AS completedTasks FROM Task WHERE Status = 'Completed';
+    SET NOCOUNT ON;
+    SELECT COUNT(*) AS completedTasks 
+    FROM Task 
+    WHERE Status = 'Completed';
 END;
 
--- Get Overdue Tasks
-CREATE PROCEDURE GetOverdueTasks
+-- Get Overdue Tasks (Deadline passed, not completed)
+CREATE OR ALTER PROCEDURE GetOverdueTasks
 AS
 BEGIN
-    SELECT COUNT(*) AS overdueTasks FROM Task 
+    SET NOCOUNT ON;
+    SELECT COUNT(*) AS overdueTasks 
+    FROM Task 
     WHERE DeadLine < GETDATE() AND Status != 'Completed';
 END;
 
--- Get Tasks Close to Deadline
-CREATE PROCEDURE GetTasksCloseToDeadline
+-- Get Tasks Close to Deadline (Next 7 days)
+CREATE OR ALTER PROCEDURE GetTasksCloseToDeadline
 AS
 BEGIN
-    SELECT Title, DeadLine FROM Task 
+    SET NOCOUNT ON;
+    SELECT Title, DeadLine 
+    FROM Task 
     WHERE DeadLine BETWEEN GETDATE() AND DATEADD(DAY, 7, GETDATE());
 END;
 
--- Get Past Deals
-CREATE PROCEDURE GetPastDeals
+-- Get Past Deals (Latest 5 deals with Client info)
+CREATE OR ALTER PROCEDURE GetPastDeals
 AS
 BEGIN
+    SET NOCOUNT ON;
     SELECT 
         c.ClientName, 
         d.DealValue, 
@@ -72,7 +87,7 @@ BEGIN
         d.DeadLine, 
         d.PaymentStatus 
     FROM Deal d 
-    INNER JOIN Customer c ON d.CustomerID = c.CustomerID 
+    INNER JOIN Client c ON d.ClientID = c.ClientID
     ORDER BY d.DeadLine DESC 
     OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
 END;

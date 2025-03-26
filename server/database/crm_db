@@ -1,69 +1,55 @@
-CREATE TABLE [User] (
-UserID INT IDENTITY(1,1) PRIMARY KEY,
-Email VARCHAR(30) UNIQUE NOT NULL,
-[Password] VARCHAR(255) NOT NULL,
-[Role] VARCHAR(10) NOT NULL,
-Company VARCHAR(20),
-OrganizationID INT,
-TaskID INT
+-- Table: Seller
+CREATE TABLE Seller (
+    SellerID INT IDENTITY(1,1) PRIMARY KEY,
+    SellerName VARCHAR(50) NOT NULL,
+    Email VARCHAR(50) UNIQUE NOT NULL,
+    [Password] VARCHAR(255) NOT NULL,
+    [Role] VARCHAR(20) NOT NULL,
+    Company VARCHAR(50) NOT NULL
 );
 
--- Table Organization
-CREATE TABLE Organization (
-OrganizationID INT IDENTITY(1,1) PRIMARY KEY,
-CustomerID INT,
-Description VARCHAR(200),
-TaskID INT,
-UserID INT
+-- Table: Client (Managed by Seller)
+CREATE TABLE Client (
+    ClientID INT IDENTITY(1,1) PRIMARY KEY,
+    ClientName VARCHAR(100) NOT NULL,
+    Company VARCHAR(50) NOT NULL,
+    Description VARCHAR(200),
+    Telephone VARCHAR(15) NOT NULL,
+    Email VARCHAR(50) UNIQUE NOT NULL,
+    SellerID INT NOT NULL,
+    CONSTRAINT fk_client_seller FOREIGN KEY (SellerID) REFERENCES Seller(SellerID)
 );
 
--- Table Deal
+-- Table: Deal (Belongs to a Client, created by Seller)
 CREATE TABLE Deal (
-DealID INT IDENTITY(1,1) PRIMARY KEY,
-CustomerID INT,
-DealValue DECIMAL(10,2) NOT NULL,
-Comission DECIMAL(10,2) NOT NULL,
-DeadLine DATE,
-PaymentStatus VARCHAR(30),
-TaskID INT,
-UserID INT,
-CONSTRAINT chk_deal_value CHECK (DealValue > 0),
-CONSTRAINT chk_comission CHECK (Comission >= 0)
+    DealID INT IDENTITY(1,1) PRIMARY KEY,
+    DealValue DECIMAL(10,2) NOT NULL CHECK (DealValue > 0),
+    Comission DECIMAL(10,2) NOT NULL CHECK (Comission >= 0),
+    DeadLine DATE,
+    PaymentStatus VARCHAR(30) CHECK (PaymentStatus IN ('Pending', 'Completed', 'Overdue')) DEFAULT 'Pending',
+    Description VARCHAR(200),
+    ClientID INT NOT NULL,
+    SellerID INT NOT NULL,
+    CONSTRAINT fk_deal_client FOREIGN KEY (ClientID) REFERENCES Client(ClientID),
+    CONSTRAINT fk_deal_seller FOREIGN KEY (SellerID) REFERENCES Seller(SellerID)
 );
 
--- Table Task
+-- Table: Task (MUST belong to a Deal)
 CREATE TABLE Task (
-TaskID INT IDENTITY(1,1) PRIMARY KEY,
-Title VARCHAR(30) NOT NULL,
-CustomerID INT,
-[Status] VARCHAR(10) NOT NULL,
-Priority VARCHAR(10) NOT NULL CHECK (Priority IN ('Critical', 'High', 'Low')) DEFAULT 'Low',
-Description VARCHAR(100),
-DeadLine DATE,
-OrganizationID INT,
-DealID INT,
-UserID INT,
-CONSTRAINT chk_status CHECK ([Status] IN ('Pending', 'In Progress', 'Completed'))
+    TaskID INT IDENTITY(1,1) PRIMARY KEY,
+    Title VARCHAR(50) NOT NULL,
+    [Status] VARCHAR(20) NOT NULL CHECK ([Status] IN ('Pending', 'In Progress', 'Completed')),
+    Priority VARCHAR(10) NOT NULL CHECK (Priority IN ('Critical', 'High', 'Low')) DEFAULT 'Low',
+    Description VARCHAR(200),
+    DeadLine DATE,
+    DealID INT NOT NULL,
+    SellerID INT, -- Optional: who is responsible
+    CONSTRAINT fk_task_deal FOREIGN KEY (DealID) REFERENCES Deal(DealID),
+    CONSTRAINT fk_task_seller FOREIGN KEY (SellerID) REFERENCES Seller(SellerID)
 );
 
--- Add Foreign Keys after table creation
-ALTER TABLE [User] ADD CONSTRAINT fk_user_organization FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID);
-ALTER TABLE [User] ADD CONSTRAINT fk_user_task FOREIGN KEY (TaskID) REFERENCES Task(TaskID);
-
-ALTER TABLE Organization ADD CONSTRAINT fk_organization_customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID);
-ALTER TABLE Organization ADD CONSTRAINT fk_organization_task FOREIGN KEY (TaskID) REFERENCES Task(TaskID);
-ALTER TABLE Organization ADD CONSTRAINT fk_organization_user FOREIGN KEY (UserID) REFERENCES [User](UserID);
-
-ALTER TABLE Deal ADD CONSTRAINT fk_deal_customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID);
-ALTER TABLE Deal ADD CONSTRAINT fk_deal_task FOREIGN KEY (TaskID) REFERENCES Task(TaskID);
-ALTER TABLE Deal ADD CONSTRAINT fk_deal_user FOREIGN KEY (UserID) REFERENCES [User](UserID);
-
-ALTER TABLE Task ADD CONSTRAINT fk_task_customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID);
-ALTER TABLE Task ADD CONSTRAINT fk_task_organization FOREIGN KEY (OrganizationID) REFERENCES Organization(OrganizationID);
-ALTER TABLE Task ADD CONSTRAINT fk_task_deal FOREIGN KEY (DealID) REFERENCES Deal(DealID);
-ALTER TABLE Task ADD CONSTRAINT fk_task_user FOREIGN KEY (UserID) REFERENCES [User](UserID);
-
--- Indexes for performance optimization
-CREATE INDEX idx_customer_email ON Customer(Email);
+-- Optional Performance Indexes
+CREATE INDEX idx_client_email ON Client(Email);
 CREATE INDEX idx_task_status ON Task([Status]);
 CREATE INDEX idx_task_deadline ON Task(DeadLine);
+CREATE INDEX idx_deal_payment_status ON Deal(PaymentStatus);

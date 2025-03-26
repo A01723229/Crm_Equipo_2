@@ -11,7 +11,6 @@ interface User {
   company: string;
   role: string;
   email: string;
-  password: string;
   isLogin: boolean;
 }
 

@@ -10,7 +10,7 @@ const api = "/api";
 // Procedures
 const getTotalSales = "EXEC GetTotalSales";
 const getTotalIncome = "EXEC GetTotalIncome";
-const getTotalCustomers = "EXEC GetTotalCustomers";
+const getTotalCustomers = "EXEC GetTotalClients";
 const getCompletionRate = "EXEC GetCompletionRate";
 const getTaskStats = "EXEC GetTaskStats";
 const getCompletedTasks = "EXEC GetCompletedTasks";
