@@ -20,7 +20,7 @@ export default function Dashboard() {
   const {
     totalSales,
     totalIncome,
-    totalCustomers,
+    totalClients,
     completionRate,
     taskStats,
     completedTasks,
@@ -43,7 +43,7 @@ export default function Dashboard() {
         </div>
         <div className="bg-white p-6 rounded-lg shadow text-center">
           <h3 className="text-gray-700 font-bold">Total Customers</h3>
-          <p className="text-2xl text-black font-semibold">{totalCustomers.toLocaleString()}</p>
+          <p className="text-2xl text-black font-semibold">{totalClients.toLocaleString()}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow text-center">
           <h3 className="text-gray-700 font-bold">Completion Rate</h3>
