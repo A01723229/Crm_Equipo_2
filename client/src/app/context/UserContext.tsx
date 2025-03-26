@@ -1,17 +1,10 @@
 'use client';
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { User } from "../interfaces/user"
 
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
-}
-
-interface User {
-  name: string;
-  company: string;
-  role: string;
-  email: string;
-  isLogin: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

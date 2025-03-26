@@ -91,3 +91,96 @@ BEGIN
     ORDER BY d.DeadLine DESC 
     OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
 END;
+
+-- Get Total Commissions (Sum of commissions from completed deals)
+CREATE OR ALTER PROCEDURE GetTotalCommissions
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT SUM(Comission) AS totalCommissions 
+    FROM Deal 
+    WHERE PaymentStatus = 'Completed';
+END;
+
+-- Get Commission Rate (Average commission percentage across all deals)
+CREATE OR ALTER PROCEDURE GetCommissionRate
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        (SUM(Comission) * 100.0 / NULLIF(SUM(DealValue), 0)) AS commissionRate
+    FROM Deal;
+END;
+
+-- Get Pending Payments (Deals that have not been paid yet)
+CREATE OR ALTER PROCEDURE GetPendingPayments
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        c.ClientName,
+        d.Comission,
+        d.DeadLine AS PaymentDate
+    FROM Deal d
+    INNER JOIN Client c ON d.ClientID = c.ClientID
+    WHERE d.PaymentStatus = 'Pending'
+    ORDER BY d.DeadLine;
+END;
+
+-- Get Top Commissions (Top 5 deals with the highest commissions)
+CREATE OR ALTER PROCEDURE GetTopCommissions
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 5 
+        c.ClientName,
+        d.Comission
+    FROM Deal d
+    INNER JOIN Client c ON d.ClientID = c.ClientID
+    ORDER BY d.Comission DESC;
+END;
+
+-- Get All Deals (List of all deals with relevant client and payment info)
+CREATE OR ALTER PROCEDURE GetAllDeals
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        c.ClientName,
+        d.DealValue,
+        d.Comission,
+        d.DeadLine AS DealDate,
+        d.PaymentStatus
+    FROM Deal d
+    INNER JOIN Client c ON d.ClientID = c.ClientID
+    ORDER BY d.DeadLine DESC;
+END;
+
+-- Get Client List (List of all clients with contact information)
+CREATE OR ALTER PROCEDURE GetClientList
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        ClientName,
+        Company AS Organization,
+        Telephone,
+        Email
+    FROM Client;
+END;
+
+-- Get Selected Client (Retrieve full details for a specific client)
+CREATE OR ALTER PROCEDURE GetSelectedClient
+    @ClientID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        ClientName,
+        Company AS Organization,
+        Telephone,
+        Email,
+        Description
+    FROM Client
+    WHERE ClientID = @ClientID;
+END;

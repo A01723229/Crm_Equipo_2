@@ -17,9 +17,19 @@ const getCompletedTasks = "EXEC GetCompletedTasks";
 const getOverdueTasks = "EXEC GetOverdueTasks";
 const getTasksCloseToDeadline = "EXEC GetTasksCloseToDeadline";
 const getPastDeals = "EXEC GetPastDeals";
+const getTotalCommissions = "EXEC GetTotalCommissions";
+const getCommissionRate = "EXEC GetCommissionRate";
+const getPendingPayments = "EXEC GetPendingPayments";
+const getTopCommissions = "EXEC GetTopCommissions";
+const getAllDeals = "EXEC GetAllDeals";
+const getClientList = "EXEC GetClientList";
+const getSelectedClient = "EXEC GetSelectedClient @ClientID";
+
 
 module.exports = {
    dbHost, dbPort, dbUser, dbPass, dbName, serverPort, api,
    getTotalSales, getTotalIncome, getTotalCustomers, getCompletionRate,
-   getTaskStats, getCompletedTasks, getOverdueTasks, getTasksCloseToDeadline, getPastDeals
+   getTaskStats, getCompletedTasks, getOverdueTasks, getTasksCloseToDeadline, getPastDeals, 
+   getTotalCommissions, getCommissionRate, getPendingPayments, getTopCommissions, 
+   getAllDeals, getClientList, getSelectedClient
 };

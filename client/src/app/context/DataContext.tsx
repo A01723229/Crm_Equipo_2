@@ -1,30 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useUser } from "./UserContext";
-
-interface TaskStat {
-  value: number;
-  color: string;
-}
-
-interface PastDeal {
-  ClientName: string;
-  DealValue: number;
-  Comission: number;
-  DeadLine: string;
-  PaymentStatus: string;
-}
-
-export interface Data {
-  totalSales: number;
-  totalIncome: number;
-  totalCustomers: number;
-  completionRate: number;
-  taskStats: Record<string, TaskStat[]>;
-  completedTasks: number;
-  overdueTasks: number;
-  tasksCloseToDeadline: { title: string; deadline: string }[];
-  pastDeals: PastDeal[];
-}
+import { Data } from "../interfaces/data";
 
 interface DataContextProps {
   data: Data | null;
@@ -77,4 +53,3 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     </DataContext.Provider>
   );
 };
-
