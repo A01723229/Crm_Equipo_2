@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function SignUp() {
   const { setUser } = useUser();
 
-  const [name, setName] = useState("");
+  const [sellerName, setName] = useState("");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ export default function SignUp() {
       const response = await fetch('http://localhost:3001/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role, company, name }),
+        body: JSON.stringify({ email, password, role, company, sellerName }),
       });
 
       const data = await response.json();
@@ -36,7 +36,7 @@ export default function SignUp() {
       }
 
       setUser({
-        name,
+        sellerName,
         company,
         role,
         email,
@@ -61,7 +61,7 @@ export default function SignUp() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-600">Name</label>
-            <input type="text" placeholder="Username" value={name}
+            <input type="text" placeholder="Username" value={sellerName}
               className="w-full p-2 text-black placeholder-gray-300 border border-gray-400 rounded"
               onChange={(e) => setName(e.target.value)} required />
           </div>

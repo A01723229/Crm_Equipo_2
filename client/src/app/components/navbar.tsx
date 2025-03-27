@@ -24,7 +24,7 @@ export default function Navigation() {
           <div className="text-right">
             <Link href="/login" className="flex items-center w-full z-50">
               <div className="flex flex-col items-end">
-                <div className="text-sm text-gray-800 font-medium">{isUser ? `${user.name}` : 'Log in'}</div>
+                <div className="text-sm text-gray-800 font-medium">{isUser ? `${user.sellerName}` : 'Log in'}</div>
                 <div className="text-xs text-gray-800">{isUser ? `${user.role}` : ''}</div>
               </div>
             </Link>

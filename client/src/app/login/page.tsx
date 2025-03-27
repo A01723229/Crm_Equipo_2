@@ -34,7 +34,7 @@ export default function Login() {
         return;
       }
       setUser({
-        name: data.seller.name,
+        sellerName: data.seller.name,
         company: data.seller.company,
         role: data.seller.role,
         email: data.seller.email,

@@ -1,5 +1,5 @@
 export interface User {
-    name: string;
+    sellerName: string;
     company: string;
     role: string;
     email: string;
