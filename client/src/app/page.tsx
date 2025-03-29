@@ -22,12 +22,26 @@ export default function Dashboard() {
     totalIncome,
     totalClients,
     completionRate,
-    taskStats,
     completedTasks,
     overdueTasks,
     tasksCloseToDeadline,
     pastDeals,
   } = data;
+  
+  const taskStats: { Priority: string; count: number }[] = Array.isArray(data.taskStats) ? data.taskStats : [];
+  
+  console.log("tasksCloseToDeadline", tasksCloseToDeadline);
+  
+  const taskStatsPieData = Array.isArray(taskStats)
+    ? taskStats.map((stat: any) => ({
+        name: stat.Priority,
+        value: stat.count,
+        color:
+          stat.Priority === "Critical" ? "#f87171" :
+          stat.Priority === "High" ? "#facc15" :
+          "#4ade80"
+      }))
+    : [];
 
   return (
     <div className="p-8 pt-20 bg-gray-100 min-h-screen space-y-6 pl-20">
@@ -54,33 +68,40 @@ export default function Dashboard() {
       {/* KEY PERFORMANCE */}
       <div className="bg-white p-6 rounded-lg shadow space-y-4">
         <h3 className="text-gray-700 font-bold text-lg">Key Performance Indicators</h3>
+
         <div className="flex gap-2 text-sm">
-          <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full">Critical: {taskStats?.Critical?.length || 0}</span>
-          <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">High: {taskStats?.High?.length || 0}</span>
-          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">Low: {taskStats?.Low?.length || 0}</span>
+          <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full">
+            Critical: {taskStats.find((t: any) => t.Priority === 'Critical')?.count || 0}
+          </span>
+          <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
+            High: {taskStats.find((t: any) => t.Priority === 'High')?.count || 0}
+          </span>
+          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+            Low: {taskStats.find((t: any) => t.Priority === 'Low')?.count || 0}
+          </span>
         </div>
 
-        {/* Task Stats Pie */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {Object.entries(taskStats).map(([stage, stats], index) => (
-            <div key={index} className="text-center">
-              <h4 className="font-semibold">{stage}</h4>
-              <PieChart width={180} height={180}>
-                <Pie
-                  data={Array.isArray(stats) ? stats : []}
-                  dataKey="value"
-                  outerRadius={70}
-                  innerRadius={35}
-                  paddingAngle={3}
-                >
-                  {Array.isArray(stats) && stats.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </div>
-          ))}
+        {/* Task Stats Pie Chart */}
+        <div className="flex justify-center">
+          {taskStatsPieData.length > 0 && taskStatsPieData.some(s => s.value > 0) ? (
+            <PieChart width={300} height={300}>
+              <Pie
+                data={taskStatsPieData}
+                dataKey="value"
+                nameKey="name"
+                outerRadius={90}
+                innerRadius={50}
+                paddingAngle={3}
+              >
+                {taskStatsPieData.map((entry, i) => (
+                  <Cell key={i} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          ) : (
+            <p className="text-gray-500 mt-4">No data available for task priorities</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-6">
@@ -100,10 +121,10 @@ export default function Dashboard() {
         <h3 className="text-gray-700 font-bold text-lg">Tasks Close to Deadline</h3>
         <ul className="divide-y mt-4 text-black">
           {tasksCloseToDeadline.length > 0 ? (
-            tasksCloseToDeadline.map((task, index) => (
+            tasksCloseToDeadline.map((task: any, index: number) => (
               <li key={index} className="py-2 flex justify-between">
-                <span>{task.title}</span>
-                <span className="text-black">{new Date(task.deadline).toLocaleDateString()}</span>
+                <span>{task.Title}</span>
+                <span className="text-black">{new Date(task.DeadLine).toLocaleDateString()}</span>
               </li>
             ))
           ) : (
@@ -127,7 +148,7 @@ export default function Dashboard() {
           </thead>
           <tbody>
             {pastDeals.length > 0 ? (
-              pastDeals.map((deal, index) => (
+              pastDeals.map((deal: any, index: number) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="p-2 border">{deal.ClientName}</td>
                   <td className="p-2 border">${deal.DealValue.toLocaleString()}</td>

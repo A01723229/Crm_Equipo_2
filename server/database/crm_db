@@ -53,3 +53,11 @@ CREATE INDEX idx_client_email ON Client(Email);
 CREATE INDEX idx_task_status ON Task([Status]);
 CREATE INDEX idx_task_deadline ON Task(DeadLine);
 CREATE INDEX idx_deal_payment_status ON Deal(PaymentStatus);
+
+--New 3/29
+ALTER TABLE Task
+ADD Stage VARCHAR(20) NOT NULL
+    CONSTRAINT chk_task_stage CHECK (Stage IN (
+        'Requested', 'Ready to Start', 'Working', 'Waiting', 'Review', 'Done'
+    )) DEFAULT 'Requested';
+

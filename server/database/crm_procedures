@@ -184,3 +184,21 @@ BEGIN
     FROM Client
     WHERE ClientID = @ClientID;
 END;
+
+--New 3/29
+CREATE PROCEDURE GetAllTasks
+AS
+BEGIN
+  SELECT
+    TaskID,
+    Title,
+    [Status],
+    Priority,
+    Stage,
+    Description,
+    DeadLine,
+    DealID,
+    SellerID
+  FROM Task;
+END;
+

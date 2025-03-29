@@ -37,7 +37,18 @@ export interface TaskStat {
     Telephone: string;
     Email: string;
   }
-  
+
+  export interface Task {
+    TaskID: number;
+    Title: string;
+    Status: string;
+    Priority: string;
+    Stage: string;
+    Description?: string;
+    DeadLine?: string;
+    DealID: number;
+    SellerID?: number;
+  }
   export interface Data {
     totalSales: number;
     totalIncome: number;
@@ -54,4 +65,5 @@ export interface TaskStat {
     topCommissions: TopCommission[];
     allDeals: Deal[];
     clientList: Client[];
+    tasks: Task[];
   }

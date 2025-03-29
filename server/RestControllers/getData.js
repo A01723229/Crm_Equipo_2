@@ -1,30 +1,32 @@
 const sql = require("mssql");
 const db = require("../database/db.js");
+const procedures = require("../constants"); 
 
 const getData = async (req, res) => {
   try {
     const pool = await db.poolPromise;
 
-    // Execute all stored procedures in parallel
+    // Execute all procedures 
     const results = await Promise.all([
-      pool.request().execute("GetTotalSales"),
-      pool.request().execute("GetTotalIncome"),
-      pool.request().execute("GetTotalClients"),
-      pool.request().execute("GetCompletionRate"),
-      pool.request().execute("GetTaskStats"),
-      pool.request().execute("GetCompletedTasks"),
-      pool.request().execute("GetOverdueTasks"),
-      pool.request().execute("GetTasksCloseToDeadline"),
-      pool.request().execute("GetPastDeals"),
-      pool.request().execute("GetTotalCommissions"),
-      pool.request().execute("GetCommissionRate"),
-      pool.request().execute("GetPendingPayments"),
-      pool.request().execute("GetTopCommissions"),
-      pool.request().execute("GetAllDeals"),
-      pool.request().execute("GetClientList")
+      pool.request().query(procedures.getTotalSales),
+      pool.request().query(procedures.getTotalIncome),
+      pool.request().query(procedures.getTotalCustomers),
+      pool.request().query(procedures.getCompletionRate),
+      pool.request().query(procedures.getTaskStats),
+      pool.request().query(procedures.getCompletedTasks),
+      pool.request().query(procedures.getOverdueTasks),
+      pool.request().query(procedures.getTasksCloseToDeadline),
+      pool.request().query(procedures.getPastDeals),
+      pool.request().query(procedures.getTotalCommissions),
+      pool.request().query(procedures.getCommissionRate),
+      pool.request().query(procedures.getPendingPayments),
+      pool.request().query(procedures.getTopCommissions),
+      pool.request().query(procedures.getAllDeals),
+      pool.request().query(procedures.getClientList),
+      pool.request().query(procedures.getAllTasks)
     ]);
 
-    // Extract data safely from SQL Server responses
+    // Extract data from responses
     const totalSales = results[0].recordset[0]?.totalSales || 0;
     const totalIncome = results[1].recordset[0]?.totalIncome || 0;
     const totalClients = results[2].recordset[0]?.totalClients || 0;
@@ -40,6 +42,7 @@ const getData = async (req, res) => {
     const topCommissions = results[12].recordset || [];
     const allDeals = results[13].recordset || [];
     const clientList = results[14].recordset || [];
+    const tasks = results[15].recordset || [];
 
     res.json({
       totalSales,
@@ -56,7 +59,8 @@ const getData = async (req, res) => {
       pendingPayments,
       topCommissions,
       allDeals,
-      clientList
+      clientList,
+      tasks
     });
   } catch (err) {
     console.error("Data Query Error:", err);

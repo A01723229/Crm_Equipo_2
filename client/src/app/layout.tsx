@@ -8,8 +8,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <DataProvider>
-      <UserProvider>
+    <UserProvider>
+      <DataProvider>
         <html lang="en">
           <body className={inter.className}>
             <div className="flex">
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </body>
         </html>
-      </UserProvider>
-    </DataProvider>
+      </DataProvider>
+    </UserProvider>
   );
 }
