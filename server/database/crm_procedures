@@ -185,7 +185,6 @@ BEGIN
     WHERE ClientID = @ClientID;
 END;
 
---New 3/29
 CREATE PROCEDURE GetAllTasks
 AS
 BEGIN
@@ -202,3 +201,15 @@ BEGIN
   FROM Task;
 END;
 
+--New 4/2
+CREATE PROCEDURE getAllProducts
+AS
+BEGIN
+  SELECT
+    ProductID,
+    Name,
+    Description,
+    Category,
+    Price
+  FROM Product;
+END;

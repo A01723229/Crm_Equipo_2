@@ -49,6 +49,15 @@ export interface TaskStat {
     DealID: number;
     SellerID?: number;
   }
+
+  export interface Product {
+    ProductID: number;
+    Name: string;
+    Description: string;
+    Category: string;
+    Price: number;
+  }
+  
   export interface Data {
     totalSales: number;
     totalIncome: number;
@@ -66,4 +75,5 @@ export interface TaskStat {
     allDeals: Deal[];
     clientList: Client[];
     tasks: Task[];
+    products: Product[];
   }

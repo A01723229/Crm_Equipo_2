@@ -25,6 +25,7 @@ const getAllDeals = "EXEC GetAllDeals";
 const getClientList = "EXEC GetClientList";
 const getSelectedClient = "EXEC GetSelectedClient @ClientID";
 const getAllTasks = "EXEC GetAllTasks";
+const getAllProducts = "EXEC getAllProducts";
 
 
 module.exports = {
@@ -32,5 +33,5 @@ module.exports = {
    getTotalSales, getTotalIncome, getTotalCustomers, getCompletionRate,
    getTaskStats, getCompletedTasks, getOverdueTasks, getTasksCloseToDeadline, getPastDeals, 
    getTotalCommissions, getCommissionRate, getPendingPayments, getTopCommissions, 
-   getAllDeals, getClientList, getSelectedClient, getAllTasks
+   getAllDeals, getClientList, getSelectedClient, getAllTasks, getAllProducts
 };

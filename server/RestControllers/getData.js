@@ -1,12 +1,8 @@
-const sql = require("mssql");
-const db = require("../database/db.js");
-const procedures = require("../constants"); 
-
 const getData = async (req, res) => {
   try {
     const pool = await db.poolPromise;
 
-    // Execute all procedures 
+    // Execute all procedures
     const results = await Promise.all([
       pool.request().query(procedures.getTotalSales),
       pool.request().query(procedures.getTotalIncome),
@@ -23,10 +19,11 @@ const getData = async (req, res) => {
       pool.request().query(procedures.getTopCommissions),
       pool.request().query(procedures.getAllDeals),
       pool.request().query(procedures.getClientList),
-      pool.request().query(procedures.getAllTasks)
+      pool.request().query(procedures.getAllTasks),
+      pool.request().query(procedures.getAllProducts)
     ]);
 
-    // Extract data from responses
+    // Extract data
     const totalSales = results[0].recordset[0]?.totalSales || 0;
     const totalIncome = results[1].recordset[0]?.totalIncome || 0;
     const totalClients = results[2].recordset[0]?.totalClients || 0;
@@ -43,6 +40,7 @@ const getData = async (req, res) => {
     const allDeals = results[13].recordset || [];
     const clientList = results[14].recordset || [];
     const tasks = results[15].recordset || [];
+    const products = results[16].recordset || [];
 
     res.json({
       totalSales,
@@ -60,12 +58,11 @@ const getData = async (req, res) => {
       topCommissions,
       allDeals,
       clientList,
-      tasks
+      tasks,
+      products
     });
   } catch (err) {
     console.error("Data Query Error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-module.exports = { getData };
