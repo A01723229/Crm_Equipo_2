@@ -1,5 +1,6 @@
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const db = require("../database/db.js");
 
 const postLogin = async (req, res) => {
@@ -26,6 +27,25 @@ const postLogin = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: "Incorrect credentials." });
     }
+
+    const token = jwt.sign(
+      {
+        id: seller.SellerID,
+        email: seller.Email,
+        role: seller.Role,
+        name: seller.SellerName,
+        company: seller.Company
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
 
     res.json({
       message: "Login successful.",
