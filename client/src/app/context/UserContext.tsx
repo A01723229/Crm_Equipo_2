@@ -15,7 +15,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/me");
+        const res = await fetch("https://crm-equipo-2.vercel.app/api/me");
         if (res.ok) {
           const userData = await res.json();
           setUser(userData);
