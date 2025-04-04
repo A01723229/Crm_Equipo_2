@@ -63,15 +63,9 @@ ADD Stage VARCHAR(20) NOT NULL
 
 --New 4/2
 CREATE TABLE Product (
-  ProductID INT AUTO_INCREMENT PRIMARY KEY,
+  ProductID INT IDENTITY(1,1) PRIMARY KEY,
   Name VARCHAR(100) NOT NULL,
   Description TEXT,
   Category VARCHAR(100),
   Price DECIMAL(10, 2)
 );
-
-VALUES 
-  ('Code Maintainability', 'Review and refactor code for better structure and maintainability.', 'Development', 150.00),
-  ('Performance Optimization', 'Optimize app load time and responsiveness.', 'Engineering', 200.00),
-  ('UI Audit', 'Check user interfaces for accessibility and best practices.', 'Design', 120.00);
-

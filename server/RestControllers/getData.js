@@ -1,3 +1,7 @@
+const sql = require("mssql");
+const db = require("../database/db.js");
+const procedures = require("../constants"); 
+
 const getData = async (req, res) => {
   try {
     const pool = await db.poolPromise;
@@ -66,3 +70,5 @@ const getData = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+module.exports = { getData };

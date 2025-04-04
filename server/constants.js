@@ -25,7 +25,7 @@ const getAllDeals = "EXEC GetAllDeals";
 const getClientList = "EXEC GetClientList";
 const getSelectedClient = "EXEC GetSelectedClient @ClientID";
 const getAllTasks = "EXEC GetAllTasks";
-const getAllProducts = "EXEC getAllProducts";
+const getAllProducts = "EXEC GetAllProducts";
 
 
 module.exports = {
