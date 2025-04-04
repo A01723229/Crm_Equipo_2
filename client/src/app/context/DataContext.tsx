@@ -33,7 +33,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       try {
-        const res = await fetch("http://localhost:3001/api/data");
+        const res = await fetch("https://crm-equipo-2.vercel.app/api/data");
         if (!res.ok) throw new Error("Failed to fetch data");
         const jsonData: Data = await res.json();
         setData(jsonData);
