@@ -9,7 +9,7 @@ export default function Dashboard() {
   const { data, loading: dataLoading, error } = useData();
   const isUser = user?.isLogin;
 
-  if (userLoading) {
+  if (userLoading || dataLoading) {
     return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md" />;
   }
   
@@ -17,17 +17,14 @@ export default function Dashboard() {
     return <LogInBox />;
   }
   
-  if (dataLoading) {
-    return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md" />;
-  }
-  
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
   
   if (!data) {
-    return <div className="text-red-500">No data available</div>;
+    return <div className="text-gray-500">No data available</div>;
   }
+
   const {
     totalSales,
     totalIncome,
