@@ -5,14 +5,26 @@ import { useUser } from '../context/UserContext';
 import LogInBox from '../components/loginBox';
 
 const DealsPage = () => {
-  const { data, loading, error } = useData();
-  const { user } = useUser();
+  const { data, loading: dataLoading, error } = useData();
+  const { user, loading: userLoading } = useUser();
+
   const isUser = user?.isLogin;
 
-  if (!isUser) return <LogInBox />;
-  if (loading) return <div className="pt-20 pl-20 text-gray-600">Loading deals...</div>;
-  if (error || !data) return <div className="pt-20 pl-20 text-red-500">{error || "Failed to load data."}</div>;
-  
+  if (userLoading || dataLoading) {
+    return <div className="pt-20 pl-20 text-gray-600">Loading deals...</div>;
+  }
+
+  if (!isUser) {
+    return <LogInBox />;
+  }
+
+  if (error || !data) {
+    return (
+      <div className="pt-20 pl-20 text-red-500">
+        {error || "Failed to load data."}
+      </div>
+    );
+  }
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800 space-y-6">
 

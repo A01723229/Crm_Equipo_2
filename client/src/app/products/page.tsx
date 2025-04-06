@@ -5,20 +5,26 @@ import { useUser } from '../context/UserContext';
 import LogInBox from '../components/loginBox';
 
 const ProductsPage = () => {
-  const { data, loading, error } = useData();
-  const { user } = useUser();
-  const isUser = user?.isLogin;
-  
-    if (!isUser) return <LogInBox />;
+  const { data, loading: dataLoading, error } = useData();
+  const { user, loading: userLoading } = useUser();
 
-  if (loading)
+  const isUser = user?.isLogin;
+
+  if (userLoading || dataLoading) {
     return <div className="pt-20 pl-20 text-gray-600">Loading products...</div>;
-  if (error || !data || !data.products)
+  }
+
+  if (!isUser) {
+    return <LogInBox />;
+  }
+
+  if (error || !data || !data.products) {
     return (
       <div className="pt-20 pl-20 text-red-500">
         {error || "Failed to load products."}
       </div>
     );
+  }
 
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800 space-y-6">

@@ -20,36 +20,40 @@ export default function SignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const response = await fetch('https://crm-equipo-2.vercel.app/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password, role, company, sellerName }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Signup failed");
+  
+      const dataText = await response.text();
+      let data;
+  
+      try {
+        data = JSON.parse(dataText);
+      } catch (err) {
+        console.error("Invalid server response:", dataText);
+        setError("Unexpected response from server.");
         return;
       }
-
-      setUser({
-        sellerName,
-        company,
-        role,
-        email,
-        isLogin: true,
-      });
-
-      console.log('Account Created');
+  
+      if (!response.ok) {
+        setError(data?.error || "Signup failed.");
+        return;
+      }
+  
+      console.log("Account created");
       router.push("/");
+  
     } catch (err) {
       console.error("Signup Error:", err);
       setError("Something went wrong. Please try again.");
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

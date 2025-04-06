@@ -5,21 +5,27 @@ import { useUser } from '../context/UserContext';
 import LogInBox from '../components/loginBox';
 
 const CustomersPage = () => {
-  const { data, loading, error } = useData();
+  const { data, loading: dataLoading, error } = useData();
+  const { user, loading: userLoading } = useUser();
   const [selectedClient, setSelectedClient] = useState<any>(null);
-  const { user } = useUser();
+
   const isUser = user?.isLogin;
 
-  if (!isUser) return <LogInBox />;
-  if (loading)
+  if (userLoading || dataLoading) {
     return <div className="pt-20 pl-20 text-gray-600">Loading clients...</div>;
+  }
 
-  if (error || !data || !data.clientList)
+  if (!isUser) {
+    return <LogInBox />;
+  }
+
+  if (error || !data || !data.clientList) {
     return (
       <div className="pt-20 pl-20 text-red-500">
         {error || "Failed to load clients."}
       </div>
     );
+  }
 
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800">

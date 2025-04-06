@@ -8,12 +8,13 @@ const priorities = ["CRITICAL", "HIGH", "LOW"];
 const columns = ["Requested", "Ready to Start", "Working", "Waiting", "Review", "Done"];
 
 const KanbanBoard = () => {
-  const { data, loading, error } = useData();
+  const { data, loading: dataLoading, error } = useData();
+  const { user, loading: userLoading } = useUser();
   const [expandedCardIds, setExpandedCardIds] = useState<string[]>([]);
-  const { user } = useUser();
+
   const isUser = user?.isLogin;
 
-  const normalize = (str: string) => str?.toLowerCase().replace(/\s+/g, "");
+  const normalize = (str: string) => str?.toLowerCase().replace(/\s+/g, '');
 
   const handleToggle = (id: string) => {
     setExpandedCardIds((prev) =>
@@ -23,9 +24,21 @@ const KanbanBoard = () => {
     );
   };
 
-  if (!isUser) return <LogInBox />;
-  if (loading) return <div className="pt-20 pl-20 text-gray-600">Loading tasks...</div>;
-  if (error || !data || !data.tasks) return <div className="pt-20 pl-20 text-red-500">{error || "Failed to load tasks."}</div>;
+  if (userLoading || dataLoading) {
+    return <div className="pt-20 pl-20 text-gray-600">Loading tasks...</div>;
+  }
+
+  if (!isUser) {
+    return <LogInBox />;
+  }
+
+  if (error || !data || !data.tasks) {
+    return (
+      <div className="pt-20 pl-20 text-red-500">
+        {error || 'Failed to load tasks.'}
+      </div>
+    );
+  }
 
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen">

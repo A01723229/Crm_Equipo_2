@@ -1,5 +1,6 @@
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const db = require("../database/db.js");
 
 const postSignup = async (req, res) => {
@@ -12,7 +13,6 @@ const postSignup = async (req, res) => {
   try {
     const pool = await db.poolPromise;
 
-    // Check if seller (email) already exists
     const sellerExists = await pool
       .request()
       .input("email", sql.VarChar, email)
@@ -22,10 +22,8 @@ const postSignup = async (req, res) => {
       return res.status(409).json({ error: "Seller already exists." });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new seller
     await pool
       .request()
       .input("sellerName", sql.VarChar, sellerName)
@@ -38,7 +36,41 @@ const postSignup = async (req, res) => {
         VALUES (@sellerName, @email, @password, @role, @company)
       `);
 
-    res.status(201).json({ message: "Seller account created successfully." });
+    const result = await pool
+      .request()
+      .input("email", sql.VarChar, email)
+      .query("SELECT * FROM Seller WHERE Email = @email");
+
+    const newSeller = result.recordset[0];
+
+    const token = jwt.sign(
+      {
+        id: newSeller.SellerID,
+        email: newSeller.Email,
+        role: newSeller.Role,
+        name: newSeller.SellerName,
+        company: newSeller.Company,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict", 
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(201).json({
+      message: "Signup successful.",
+      seller: {
+        name: newSeller.SellerName,
+        email: newSeller.Email,
+        role: newSeller.Role,
+        company: newSeller.Company,
+      },
+    });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ error: "Internal server error." });
