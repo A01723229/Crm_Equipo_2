@@ -8,14 +8,6 @@ const router = express.Router();
 router.get("/data", getData);
 router.post("/login", postLogin);
 router.post("/signup", postSignup);
-
-router.get("/me", authMiddleware, (req, res) => {
-    res.json({
-      name: req.user.name,
-      email: req.user.email,
-      role: req.user.role,
-      company: req.user.company,
-    });
-  });
+router.get("/me", authMiddleware, getMe);
 
 module.exports = router;

@@ -6,7 +6,7 @@ const apiRoutes = require("./route");
 
 const app = express();
 app.use(cors({
-  origin: "https://crm-equipo-2.vercel.app/",
+  origin: "https://crm-equipo-2.vercel.app",
   credentials: true
 }));
 
