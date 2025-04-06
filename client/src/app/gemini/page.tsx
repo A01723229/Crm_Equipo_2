@@ -30,18 +30,18 @@ export default function GeminiPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Gemini Data Query</h2>
+    <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800 space-y-6 container mx-auto">
+      <h2 className="text-xl font-bold mb-4 text-black">Gemini Data Query</h2>
 
       <textarea
-        className="w-full p-2 border rounded mb-4"
+        className="w-full p-2 border rounded mb-4 text-black"
         placeholder="Ask a question about your data..."
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
       />
 
       <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        className="bg-gray-600 text-white px-4 py-2 rounded"
         onClick={askGemini}
         disabled={loading}
       >
@@ -49,7 +49,7 @@ export default function GeminiPage() {
       </button>
 
       {response && (
-        <div className="mt-4 p-3 border rounded bg-gray-100">
+        <div className="mt-4 p-3 border rounded bg-gray-100 text-black">
           <strong>Gemini says:</strong>
           <p>{response}</p>
         </div>
