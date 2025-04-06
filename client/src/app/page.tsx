@@ -5,18 +5,29 @@ import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import LogInBox from './components/loginBox';
 
 export default function Dashboard() {
-  const { user } = useUser();
-  const { data, loading, error } = useData();
+  const { user, loading: userLoading } = useUser();
+  const { data, loading: dataLoading, error } = useData();
   const isUser = user?.isLogin;
 
-  if (!isUser) return <LogInBox />;
-
-  if (loading) return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md"></div>;
-
-  if (error) return <div className="text-red-500">{error}</div>;
-
-  if (!data) return <div className="text-red-500">No data available</div>;
-
+  if (userLoading) {
+    return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md" />;
+  }
+  
+  if (!isUser) {
+    return <LogInBox />;
+  }
+  
+  if (dataLoading) {
+    return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md" />;
+  }
+  
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+  
+  if (!data) {
+    return <div className="text-red-500">No data available</div>;
+  }
   const {
     totalSales,
     totalIncome,
