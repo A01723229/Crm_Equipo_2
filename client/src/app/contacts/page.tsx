@@ -12,7 +12,7 @@ const CustomersPage = () => {
   const isUser = user?.isLogin;
 
   if (userLoading || dataLoading) {
-    return <div className="pt-20 pl-20 text-gray-600">Loading clients...</div>;
+    return <div className="pt-20 pl-20 bg-gray-100 text-gray-600">Loading clients...</div>;
   }
 
   if (!isUser) {
@@ -21,7 +21,7 @@ const CustomersPage = () => {
 
   if (error || !data || !data.clientList) {
     return (
-      <div className="pt-20 pl-20 text-red-500">
+      <div className="pt-20 pl-20 bg-gray-100 text-red-500">
         {error || "Failed to load clients."}
       </div>
     );

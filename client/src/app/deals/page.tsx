@@ -11,7 +11,7 @@ const DealsPage = () => {
   const isUser = user?.isLogin;
 
   if (userLoading || dataLoading) {
-    return <div className="pt-20 pl-20 text-gray-600">Loading deals...</div>;
+    return <div className="pt-20 pl-20 bg-gray-100 text-gray-600">Loading deals...</div>;
   }
 
   if (!isUser) {
@@ -20,7 +20,7 @@ const DealsPage = () => {
 
   if (error || !data) {
     return (
-      <div className="pt-20 pl-20 text-red-500">
+      <div className="pt-20 pl-20 bg-gray-100 text-red-500">
         {error || "Failed to load data."}
       </div>
     );

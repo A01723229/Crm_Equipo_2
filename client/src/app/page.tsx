@@ -18,11 +18,11 @@ export default function Dashboard() {
   }
   
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <div className="bg-gray-100 text-red-500">{error}</div>;
   }
   
   if (!data) {
-    return <div className="text-gray-500">No data available</div>;
+    return <div className="bg-gray-100 text-gray-500">No data available</div>;
   }
 
   const {
