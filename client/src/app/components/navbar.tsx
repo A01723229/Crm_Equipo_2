@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { IoMenuOutline, IoHome, IoPeopleSharp } from "react-icons/io5";
 import { BiSolidFileBlank, BiSolidDollarCircle } from "react-icons/bi";
 import { MdDiscount } from "react-icons/md";
+import { SiGooglegemini } from "react-icons/si";
 
 export default function Navigation() {
   const { user } = useUser();
@@ -30,7 +31,7 @@ export default function Navigation() {
               </div>
             </Link>
           </div>
-          <div className="w-10 h-10 bg-gray-300 rounded-full"></div> {/* Placeholder for user avatar */}
+          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
         </div>
       </div>
 
@@ -51,11 +52,11 @@ export default function Navigation() {
         <nav className="mt-2 flex flex-col space-y-6 w-full">
           {/* Home */}
           <Link href="/" className="p-2 flex items-center w-full z-60">
-          <button
-            className={`rounded-lg transition flex items-center w-12 h-12 ${
-              pathname === "/" ? "bg-white shadow-md" : "text-gray-600"
-            } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
-          >
+            <button
+              className={`rounded-lg transition flex items-center w-12 h-12 ${
+                pathname === "/" ? "bg-white shadow-md" : "text-gray-600"
+              } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
+            >
               <IoHome className="w-6 h-6 text-gray-800" />
               {isExpanded && <span className="text-gray-800 text-sm font-medium">Home</span>}
             </button>
@@ -63,11 +64,11 @@ export default function Navigation() {
 
           {/* Contacts */}
           <Link href="/contacts" className="p-2 flex items-center w-full z-60">
-          <button
-            className={`rounded-lg transition flex items-center w-12 h-12 ${
-              pathname === "/contacts" ? "bg-white shadow-md" : "text-gray-600"
-            } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
-          >
+            <button
+              className={`rounded-lg transition flex items-center w-12 h-12 ${
+                pathname === "/contacts" ? "bg-white shadow-md" : "text-gray-600"
+              } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
+            >
               <IoPeopleSharp className="w-6 h-6 text-gray-800" />
               {isExpanded && <span className="text-gray-800 text-sm font-medium">Contacts</span>}
             </button>
@@ -75,11 +76,11 @@ export default function Navigation() {
 
           {/* Tasks */}
           <Link href="/tasks" className="p-2 flex items-center w-full z-60">
-          <button
-            className={`rounded-lg transition flex items-center w-12 h-12 ${
-              pathname === "/tasks" ? "bg-white shadow-md" : "text-gray-600"
-            } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
-          >
+            <button
+              className={`rounded-lg transition flex items-center w-12 h-12 ${
+                pathname === "/tasks" ? "bg-white shadow-md" : "text-gray-600"
+              } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
+            >
               <BiSolidFileBlank className="w-6 h-6 text-gray-800" />
               {isExpanded && <span className="text-gray-800 text-sm font-medium">Tasks</span>}
             </button>
@@ -87,27 +88,39 @@ export default function Navigation() {
 
           {/* Deals */}
           <Link href="/deals" className="p-2 flex items-center w-full z-60">
-          <button
-            className={`rounded-lg transition flex items-center w-12 h-12 ${
-              pathname === "/deals" ? "bg-white shadow-md" : "text-gray-600"
-            } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
-          >
+            <button
+              className={`rounded-lg transition flex items-center w-12 h-12 ${
+                pathname === "/deals" ? "bg-white shadow-md" : "text-gray-600"
+              } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
+            >
               <BiSolidDollarCircle className="w-6 h-6 text-gray-800" />
               {isExpanded && <span className="text-gray-800 text-sm font-medium">Deals</span>}
             </button>
           </Link>
-          
+
           {/* Products */}
           <Link href="/products" className="p-2 flex items-center w-full z-60">
-          <button
-            className={`rounded-lg transition flex items-center w-12 h-12 ${
-              pathname === "/products" ? "bg-white shadow-md" : "text-gray-600"
-            } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
-          >
-            <MdDiscount className="w-6 h-6 text-gray-800" />
-            {isExpanded && <span className="text-gray-800 text-sm font-medium">Products</span>}
-          </button>
-        </Link>
+            <button
+              className={`rounded-lg transition flex items-center w-12 h-12 ${
+                pathname === "/products" ? "bg-white shadow-md" : "text-gray-600"
+              } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
+            >
+              <MdDiscount className="w-6 h-6 text-gray-800" />
+              {isExpanded && <span className="text-gray-800 text-sm font-medium">Products</span>}
+            </button>
+          </Link>
+
+          {/* Gemini */}
+          <Link href="/gemini" className="p-2 flex items-center w-full z-60">
+            <button
+              className={`rounded-lg transition flex items-center w-12 h-12 ${
+                pathname === "/gemini" ? "bg-white shadow-md" : "text-gray-600"
+              } ${isExpanded ? "w-full pl-4 justify-start gap-x-3" : "justify-center"}`}
+            >
+              <SiGooglegemini className="w-6 h-6 text-gray-800" />
+              {isExpanded && <span className="text-gray-800 text-sm font-medium">Gemini</span>}
+            </button>
+          </Link>
         </nav>
       </div>
     </>
