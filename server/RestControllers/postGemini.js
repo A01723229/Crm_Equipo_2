@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const getGemini = async (req, res) => {
+const postGemini = async (req, res) => {
   const { data, question } = req.body;
 
   if (!data || !question) {
@@ -46,4 +46,4 @@ const getGemini = async (req, res) => {
   }
 };
 
-module.exports = getGemini;
+module.exports = postGemini;
