@@ -11,21 +11,30 @@ const postLogin = async (req, res) => {
   }
 
   try {
+    console.log("Login attempt for:", email);
+
     const pool = await db.poolPromise;
     const result = await pool
       .request()
       .input("email", sql.VarChar, email)
       .query("SELECT * FROM Seller WHERE Email = @email");
 
-    const seller = result.recordset[0];
+    console.log("DB query result:", result.recordset);
 
-    if (!seller) {
+    const seller = result.recordset[0];
+    if (!seller || !seller.Password) {
+      console.warn("No user or missing password found in DB.");
       return res.status(401).json({ error: "Incorrect credentials." });
     }
 
     const passwordMatch = await bcrypt.compare(password, seller.Password);
     if (!passwordMatch) {
+      console.warn("Password mismatch.");
       return res.status(401).json({ error: "Incorrect credentials." });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined in environment variables.");
     }
 
     const token = jwt.sign(
@@ -34,7 +43,7 @@ const postLogin = async (req, res) => {
         email: seller.Email,
         role: seller.Role,
         name: seller.SellerName,
-        company: seller.Company
+        company: seller.Company,
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -44,8 +53,10 @@ const postLogin = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    console.log("Login successful for:", email);
 
     res.json({
       message: "Login successful.",
@@ -53,11 +64,12 @@ const postLogin = async (req, res) => {
         name: seller.SellerName,
         email: seller.Email,
         role: seller.Role,
-        company: seller.Company
-      }
+        company: seller.Company,
+      },
     });
+
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login error:", error.message || error);
     res.status(500).json({ error: "Internal server error." });
   }
 };

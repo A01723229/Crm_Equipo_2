@@ -28,12 +28,13 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
   
+      let dataText = await response.text();
       let data;
+  
       try {
-        data = await response.json();
+        data = JSON.parse(dataText);
       } catch (err) {
-        const text = await response.text();
-        console.error("Non-JSON response from server:", text);
+        console.error("Respuesta no válida del servidor:", dataText);
         setError("Unexpected server response. Please try again.");
         return;
       }
@@ -42,7 +43,7 @@ export default function Login() {
         setError(data?.error || "Login failed. Please try again.");
         return;
       }
-
+  
       setUser({
         sellerName: data.seller.name,
         company: data.seller.company,
@@ -50,12 +51,10 @@ export default function Login() {
         email: data.seller.email,
         isLogin: true,
       });
-  
-      console.log("Logged in successfully!");
       router.push("/");
   
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("Error al enviar el login:", err);
       setError("Something went wrong. Please try again.");
     }
   };
