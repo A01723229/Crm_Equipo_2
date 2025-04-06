@@ -17,7 +17,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const response = await fetch('https://crm-equipo-2.vercel.app/api/login', {
         method: 'POST',
@@ -27,13 +27,22 @@ export default function Login() {
         credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Login failed. Please try again.");
+  
+      let data;
+      try {
+        data = await response.json();
+      } catch (err) {
+        const text = await response.text();
+        console.error("Non-JSON response from server:", text);
+        setError("Unexpected server response. Please try again.");
         return;
       }
+  
+      if (!response.ok) {
+        setError(data?.error || "Login failed. Please try again.");
+        return;
+      }
+
       setUser({
         sellerName: data.seller.name,
         company: data.seller.company,
@@ -41,14 +50,16 @@ export default function Login() {
         email: data.seller.email,
         isLogin: true,
       });
-
-      console.log('Logged in');
+  
+      console.log("Logged in successfully!");
       router.push("/");
+  
     } catch (err) {
       console.error("Login error:", err);
-      setError("An error occurred. Please try again later.");
+      setError("Something went wrong. Please try again.");
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
