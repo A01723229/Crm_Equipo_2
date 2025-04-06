@@ -7,7 +7,7 @@ const postGemini = async (req, res) => {
     return res.status(400).json({ error: 'Missing data or question in request body.' });
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API}`;
 
   const prompt = `
     Here is the JSON data provided:
