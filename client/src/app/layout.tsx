@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <DataProvider>
         <html lang="en">
           <body className={inter.className}>
-            <div className="flex">
+            <div className="flex bg-gray-100">
               <Navigation />
               <main className="flex-1">{children}</main>
             </div>
