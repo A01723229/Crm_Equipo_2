@@ -1,7 +1,7 @@
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const db = require("../db/db.js");
+const db = require("../database/db.js");
 
 const postLogin = async (req, res) => {
   const { email, password } = req.body;

@@ -1,6 +1,6 @@
 const sql = require("mssql");
 const db = require("../database/db.js");
-const procedures = require("../constants"); 
+const procedures = require("../constants.js");
 
 const getData = async (req, res) => {
   try {
