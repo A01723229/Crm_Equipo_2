@@ -1,5 +1,5 @@
 const sql = require("mssql");
-const { dbHost, dbUser, dbPass, dbName } = require("../../constants.js");
+const { dbHost, dbUser, dbPass, dbName } = require("../constants.js");
 
 const config = {
   user: dbUser,
