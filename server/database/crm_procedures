@@ -201,7 +201,6 @@ BEGIN
   FROM Task;
 END;
 
---New 4/2
 CREATE PROCEDURE GetAllProducts
 AS
 BEGIN
@@ -213,3 +212,140 @@ BEGIN
     Price
   FROM Product;
 END;
+
+--New 4/22
+--Contacts
+CREATE PROCEDURE AddClient
+  @ClientName VARCHAR(100),
+  @Company VARCHAR(50),
+  @Description VARCHAR(200),
+  @Telephone VARCHAR(15),
+  @Email VARCHAR(50),
+  @SellerID INT
+AS
+INSERT INTO Client (ClientName, Company, Description, Telephone, Email, SellerID)
+VALUES (@ClientName, @Company, @Description, @Telephone, @Email, @SellerID);
+
+CREATE PROCEDURE UpdateClient
+  @ClientID INT,
+  @ClientName VARCHAR(100),
+  @Company VARCHAR(50),
+  @Description VARCHAR(200),
+  @Telephone VARCHAR(15),
+  @Email VARCHAR(50)
+AS
+UPDATE Client
+SET ClientName = @ClientName,
+    Company = @Company,
+    Description = @Description,
+    Telephone = @Telephone,
+    Email = @Email
+WHERE ClientID = @ClientID;
+
+CREATE PROCEDURE DeleteClient
+  @ClientID INT
+AS
+DELETE FROM Client WHERE ClientID = @ClientID;
+
+--Deals
+CREATE PROCEDURE AddDeal
+  @DealValue DECIMAL(10,2),
+  @Comission DECIMAL(10,2),
+  @DeadLine DATE,
+  @PaymentStatus VARCHAR(30),
+  @Description VARCHAR(200),
+  @ClientID INT,
+  @SellerID INT
+AS
+INSERT INTO Deal (DealValue, Comission, DeadLine, PaymentStatus, Description, ClientID, SellerID)
+VALUES (@DealValue, @Comission, @DeadLine, @PaymentStatus, @Description, @ClientID, @SellerID);
+
+CREATE PROCEDURE UpdateDeal
+  @DealID INT,
+  @DealValue DECIMAL(10,2),
+  @Comission DECIMAL(10,2),
+  @DeadLine DATE,
+  @PaymentStatus VARCHAR(30),
+  @Description VARCHAR(200),
+  @ClientID INT
+AS
+UPDATE Deal
+SET DealValue = @DealValue,
+    Comission = @Comission,
+    DeadLine = @DeadLine,
+    PaymentStatus = @PaymentStatus,
+    Description = @Description,
+    ClientID = @ClientID
+WHERE DealID = @DealID;
+
+CREATE PROCEDURE DeleteDeal
+  @DealID INT
+AS
+DELETE FROM Deal WHERE DealID = @DealID;
+
+--Tasks
+CREATE PROCEDURE AddTask
+  @Title VARCHAR(50),
+  @Status VARCHAR(20),
+  @Priority VARCHAR(10),
+  @Description VARCHAR(200),
+  @DeadLine DATE,
+  @Stage VARCHAR(20),
+  @DealID INT,
+  @SellerID INT
+AS
+INSERT INTO Task (Title, Status, Priority, Description, DeadLine, Stage, DealID, SellerID)
+VALUES (@Title, @Status, @Priority, @Description, @DeadLine, @Stage, @DealID, @SellerID);
+
+CREATE PROCEDURE UpdateTask
+  @TaskID INT,
+  @Title VARCHAR(50),
+  @Status VARCHAR(20),
+  @Priority VARCHAR(10),
+  @Description VARCHAR(200),
+  @DeadLine DATE,
+  @Stage VARCHAR(20)
+AS
+UPDATE Task
+SET Title = @Title,
+    Status = @Status,
+    Priority = @Priority,
+    Description = @Description,
+    DeadLine = @DeadLine,
+    Stage = @Stage
+WHERE TaskID = @TaskID;
+
+CREATE PROCEDURE DeleteTask
+  @TaskID INT
+AS
+DELETE FROM Task WHERE TaskID = @TaskID;
+
+--Products
+CREATE PROCEDURE AddProduct
+  @Name VARCHAR(100),
+  @Description TEXT,
+  @Category VARCHAR(100),
+  @Price DECIMAL(10, 2)
+AS
+INSERT INTO Product (Name, Description, Category, Price)
+VALUES (@Name, @Description, @Category, @Price);
+
+CREATE PROCEDURE UpdateProduct
+  @ProductID INT,
+  @Name VARCHAR(100),
+  @Description TEXT,
+  @Category VARCHAR(100),
+  @Price DECIMAL(10, 2)
+AS
+UPDATE Product
+SET Name = @Name,
+    Description = @Description,
+    Category = @Category,
+    Price = @Price
+WHERE ProductID = @ProductID;
+
+CREATE PROCEDURE DeleteProduct
+  @ProductID INT
+AS
+DELETE FROM Product WHERE ProductID = @ProductID;
+
