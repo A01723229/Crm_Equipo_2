@@ -19,10 +19,9 @@ const ProductsPage = () => {
   }
 
   if (error || !data || !data.products) {
+    console.log('Falied to load tasks');
     return (
-      <div className="pt-20 pl-20 bg-gray-100 text-red-500">
-        {error || "Failed to load products."}
-      </div>
+      <div className=""></div>
     );
   }
 

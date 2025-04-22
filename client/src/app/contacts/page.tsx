@@ -20,10 +20,9 @@ const CustomersPage = () => {
   }
 
   if (error || !data || !data.clientList) {
+    console.log('Falied to load tasks');
     return (
-      <div className="pt-20 pl-20 bg-gray-100 text-red-500">
-        {error || "Failed to load clients."}
-      </div>
+      <div className=""></div>
     );
   }
 

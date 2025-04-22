@@ -19,12 +19,12 @@ const DealsPage = () => {
   }
 
   if (error || !data) {
+    console.log('Falied to load tasks');
     return (
-      <div className="pt-20 pl-20 bg-gray-100 text-red-500">
-        {error || "Failed to load data."}
-      </div>
+      <div className=""></div>
     );
   }
+  
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800 space-y-6">
 
