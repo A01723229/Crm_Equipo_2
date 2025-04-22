@@ -1,12 +1,16 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useData } from "../context/DataContext";
 import { useUser } from '../context/UserContext';
 import LogInBox from '../components/loginBox';
+import DealForm from '../components/crudforms/dealForm';
 
 const DealsPage = () => {
-  const { data, loading: dataLoading, error } = useData();
+  const { data, loading: dataLoading, error, deleteItem } = useData();
   const { user, loading: userLoading } = useUser();
+  const [selectedDeal, setSelectedDeal] = useState<any>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [formMode, setFormMode] = useState<"add" | "edit">("add");
 
   const isUser = user?.isLogin;
 
@@ -21,6 +25,33 @@ const DealsPage = () => {
   if (!isUser) {
     return <LogInBox />;
   }
+
+  const handleAdd = () => {
+    setFormMode("add");
+    setSelectedDeal(null);
+    setShowForm(true);
+  };
+
+  const handleModify = () => {
+    if (selectedDeal) {
+      setFormMode("edit");
+      setShowForm(true);
+    } else {
+      alert("Please select a deal to modify.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedDeal) {
+      const confirmDelete = confirm("Are you sure you want to delete this deal?");
+      if (confirmDelete) {
+        await deleteItem("deals", selectedDeal.DealID.toString());
+        setSelectedDeal(null);
+      }
+    } else {
+      alert("Please select a deal to delete.");
+    }
+  };
 
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800 space-y-6">
@@ -46,9 +77,9 @@ const DealsPage = () => {
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold">All Deals</h2>
           <div className="space-x-2">
-            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Add</button>
-            <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded">Modify</button>
-            <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Delete</button>
+            <button onClick={handleAdd} className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded">Add</button>
+            <button onClick={handleModify} className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded">Modify</button>
+            <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded">Delete</button>
           </div>
         </div>
 
@@ -65,7 +96,11 @@ const DealsPage = () => {
           </thead>
           <tbody>
             {(data?.allDeals ?? []).map((deal, index) => (
-              <tr key={index} className="hover:bg-gray-100 text-sm">
+              <tr
+                key={index}
+                onClick={() => setSelectedDeal(deal)}
+                className={`cursor-pointer text-sm ${selectedDeal?.DealID === deal.DealID ? "bg-blue-100" : "hover:bg-gray-100"}`}
+              >
                 <td className="p-2">{index + 1}</td>
                 <td className="p-2">{deal.ClientName}</td>
                 <td className="p-2">{Number(deal.DealValue).toLocaleString()}</td>
@@ -128,6 +163,19 @@ const DealsPage = () => {
           </table>
         </div>
       </div>
+
+      {/* Deal Form Modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded shadow-lg max-w-md w-full">
+            <DealForm
+              mode={formMode}
+              initialData={formMode === "edit" ? selectedDeal : undefined}
+              onClose={() => setShowForm(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

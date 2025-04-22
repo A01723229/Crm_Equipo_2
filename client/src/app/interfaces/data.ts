@@ -24,19 +24,24 @@ export interface TaskStat {
   }
   
   export interface Deal {
+    DealID: number;
     ClientName: string;
     DealValue: number;
     Comission: number;
     DealDate: string;
     PaymentStatus: string;
-  }
+  }  
   
   export interface Client {
+    ClientID: number;
     ClientName: string;
-    Organization: string;
+    Company: string; 
+    Description: string;
     Telephone: string;
     Email: string;
+    SellerID: number;
   }
+  
 
   export interface Task {
     TaskID: number;
@@ -57,7 +62,7 @@ export interface TaskStat {
     Category: string;
     Price: number;
   }
-  
+
   export interface Data {
     totalSales: number;
     totalIncome: number;

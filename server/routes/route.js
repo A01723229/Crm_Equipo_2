@@ -21,23 +21,23 @@ router.get("/me", authMiddleware, getMe);
 router.post("/gemini", postGemini);
 
 // CRUD: Clients
-router.post("/clients", addClient);
-router.put("/clients/:id", updateClient);
-router.delete("/clients/:id", deleteClient);
+router.post("/clients", authMiddleware, addClient);
+router.put("/clients/:id", authMiddleware, updateClient);
+router.delete("/clients/:id", authMiddleware, deleteClient);
 
 // CRUD: Deals
-router.post("/deals", addDeal);
-router.put("/deals/:id", updateDeal);
-router.delete("/deals/:id", deleteDeal);
+router.post("/deals", authMiddleware, addDeal);
+router.put("/deals/:id", authMiddleware, updateDeal);
+router.delete("/deals/:id", authMiddleware, deleteDeal);
 
 // CRUD: Tasks
-router.post("/tasks", addTask);
-router.put("/tasks/:id", updateTask);
-router.delete("/tasks/:id", deleteTask);
+router.post("/tasks", authMiddleware, addTask);
+router.put("/tasks/:id", authMiddleware, updateTask);
+router.delete("/tasks/:id", authMiddleware, deleteTask);
 
 // CRUD: Products
-router.post("/products", addProduct);
-router.put("/products/:id", updateProduct);
-router.delete("/products/:id", deleteProduct);
+router.post("/products", authMiddleware, addProduct);
+router.put("/products/:id", authMiddleware, updateProduct);
+router.delete("/products/:id", authMiddleware, deleteProduct);
 
 module.exports = router;

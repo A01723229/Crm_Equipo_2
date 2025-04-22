@@ -1,6 +1,12 @@
 exports.addTask = async (req, res) => {
     try {
-      const { Title, Status, Priority, Description, DeadLine, Stage, DealID, SellerID } = req.body;
+      const { Title, Status, Priority, Description, DeadLine, Stage, DealID } = req.body;
+      const SellerID = req.user?.SellerID;
+  
+      if (!SellerID) {
+        return res.status(403).json({ error: "Unauthorized: SellerID not found in token." });
+      }
+  
       const pool = await poolPromise;
       await pool.request()
         .input("Title", sql.VarChar, Title)
@@ -12,6 +18,7 @@ exports.addTask = async (req, res) => {
         .input("DealID", sql.Int, DealID)
         .input("SellerID", sql.Int, SellerID)
         .execute("AddTask");
+  
       res.status(201).json({ message: "Task added" });
     } catch (err) {
       console.error("AddTask error:", err);
@@ -32,6 +39,7 @@ exports.addTask = async (req, res) => {
         .input("DeadLine", sql.Date, DeadLine)
         .input("Stage", sql.VarChar, Stage)
         .execute("UpdateTask");
+  
       res.json({ message: "Task updated" });
     } catch (err) {
       console.error("UpdateTask error:", err);
@@ -45,9 +53,11 @@ exports.addTask = async (req, res) => {
       await pool.request()
         .input("TaskID", sql.Int, req.params.id)
         .execute("DeleteTask");
+  
       res.json({ message: "Task deleted" });
     } catch (err) {
       console.error("DeleteTask error:", err);
       res.status(500).json({ error: "Failed to delete task" });
     }
   };
+  
