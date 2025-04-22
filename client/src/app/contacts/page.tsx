@@ -83,8 +83,8 @@ const CustomersPage = () => {
           {(data?.clientList ?? []).map((client, index) => (
             <tr
               key={index}
-              className={`cursor-pointer text-gray-800 ${selectedClient?.ClientID === client.ClientID ? "bg-blue-100" : "hover:bg-gray-100"}`}
               onClick={() => setSelectedClient(client)}
+              className={`cursor-pointer text-gray-800 ${selectedClient?.ClientID === client.ClientID ? "bg-blue-100" : "hover:bg-gray-100"}`}
             >
               <td className="p-2 font-medium">{index + 1}</td>
               <td className="p-2 font-medium">{client.ClientName}</td>
