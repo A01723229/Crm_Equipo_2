@@ -1,8 +1,10 @@
-'use client';
+"use client";
 import { useUser } from './context/UserContext';
 import { useData } from './context/DataContext';
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import LogInBox from './components/loginBox';
+
+type TaskStat = { Priority: string; count: number };
 
 export default function Dashboard() {
   const { user, loading: userLoading } = useUser();
@@ -10,46 +12,42 @@ export default function Dashboard() {
   const isUser = user?.isLogin;
 
   if (userLoading || dataLoading) {
-    return <div className="animate-pulse bg-gray-200 h-20 w-full rounded-md" />;
+    console.log("Loading dashboard or user data...");
   }
-  
+
+  if (error) {
+    console.log("Dashboard error:", error);
+  }
+
   if (!isUser) {
     return <LogInBox />;
   }
-  
-  if (error) {
-    return <div className="bg-gray-100 text-red-500">{error}</div>;
-  }
-  
-  if (!data) {
-    return <div className="bg-gray-100 text-gray-500">No data available</div>;
-  }
 
   const {
-    totalSales,
-    totalIncome,
-    totalClients,
-    completionRate,
-    completedTasks,
-    overdueTasks,
-    tasksCloseToDeadline,
-    pastDeals,
-  } = data;
-  
-  const taskStats: { Priority: string; count: number }[] = Array.isArray(data.taskStats) ? data.taskStats : [];
-  
-  console.log("tasksCloseToDeadline", tasksCloseToDeadline);
-  
-  const taskStatsPieData = Array.isArray(taskStats)
-    ? taskStats.map((stat: any) => ({
-        name: stat.Priority,
-        value: stat.count,
-        color:
-          stat.Priority === "Critical" ? "#f87171" :
-          stat.Priority === "High" ? "#facc15" :
-          "#4ade80"
-      }))
-    : [];
+    totalSales = 0,
+    totalIncome = 0,
+    totalClients = 0,
+    completionRate = 0,
+    completedTasks = 0,
+    overdueTasks = 0,
+    tasksCloseToDeadline = [],
+    pastDeals = [],
+    taskStats: rawStats = []
+  } = data ?? {};
+
+  const taskStats: TaskStat[] = Array.isArray(rawStats) ? rawStats : [];
+
+  const getPriorityCount = (priority: string) =>
+    taskStats.find((t) => t.Priority === priority)?.count ?? 0;
+
+  const taskStatsPieData = taskStats.map((stat) => ({
+    name: stat.Priority,
+    value: stat.count,
+    color:
+      stat.Priority === "Critical" ? "#f87171" :
+      stat.Priority === "High" ? "#facc15" :
+      "#4ade80"
+  }));
 
   return (
     <div className="p-8 pt-20 bg-gray-100 min-h-screen space-y-6 pl-20">
@@ -79,13 +77,13 @@ export default function Dashboard() {
 
         <div className="flex gap-2 text-sm">
           <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full">
-            Critical: {taskStats.find((t: any) => t.Priority === 'Critical')?.count || 0}
+            Critical: {getPriorityCount("Critical")}
           </span>
           <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
-            High: {taskStats.find((t: any) => t.Priority === 'High')?.count || 0}
+            High: {getPriorityCount("High")}
           </span>
           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-            Low: {taskStats.find((t: any) => t.Priority === 'Low')?.count || 0}
+            Low: {getPriorityCount("Low")}
           </span>
         </div>
 
@@ -159,8 +157,8 @@ export default function Dashboard() {
               pastDeals.map((deal: any, index: number) => (
                 <tr key={index} className="hover:bg-gray-50">
                   <td className="p-2 border">{deal.ClientName}</td>
-                  <td className="p-2 border">${deal.DealValue.toLocaleString()}</td>
-                  <td className="p-2 border">${deal.Comission.toLocaleString()}</td>
+                  <td className="p-2 border">${Number(deal.DealValue).toLocaleString()}</td>
+                  <td className="p-2 border">${Number(deal.Comission).toLocaleString()}</td>
                   <td className="p-2 border">{new Date(deal.DeadLine).toLocaleDateString()}</td>
                   <td className="p-2 border">{deal.PaymentStatus}</td>
                 </tr>
