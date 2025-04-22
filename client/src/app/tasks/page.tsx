@@ -24,19 +24,19 @@ const KanbanBoard = () => {
     );
   };
 
+  // Console-based loading feedback
   if (userLoading || dataLoading) {
-    return <div className="pt-20 pl-20 bg-gray-100 text-gray-600">Loading tasks...</div>;
+    console.log('Loading user or data...');
   }
 
+  // Console-based error handling
+  if (error || !data || !data.tasks) {
+    console.log('Failed to load tasks or no tasks available.');
+  }
+
+  // Show login box if not authenticated
   if (!isUser) {
     return <LogInBox />;
-  }
-
-  if (error || !data || !data.tasks) {
-    console.log('Falied to load tasks');
-    return (
-      <div className=""></div>
-    );
   }
 
   return (
@@ -70,10 +70,10 @@ const KanbanBoard = () => {
           {/* Grid Row */}
           <div className="grid grid-cols-6 gap-0">
             {columns.map((col, colIdx) => {
-              const tasks = data.tasks.filter(task =>
+              const tasks = data?.tasks?.filter(task =>
                 normalize(task.Stage) === normalize(col) &&
                 task.Priority?.toUpperCase() === priority
-              );
+              ) || [];
 
               return (
                 <div key={colIdx} className="bg-white border border-black min-h-[150px] p-2">

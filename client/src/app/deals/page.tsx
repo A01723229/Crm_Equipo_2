@@ -11,33 +11,33 @@ const DealsPage = () => {
   const isUser = user?.isLogin;
 
   if (userLoading || dataLoading) {
-    return <div className="pt-20 pl-20 bg-gray-100 text-gray-600">Loading deals...</div>;
+    console.log('Loading deals or user...');
+  }
+
+  if (error || !data) {
+    console.log('Failed to load deals data.');
   }
 
   if (!isUser) {
     return <LogInBox />;
   }
 
-  if (error || !data) {
-    console.log('Falied to load tasks');
-    return (
-      <div className=""></div>
-    );
-  }
-  
   return (
     <div className="pt-20 pl-20 pr-6 pb-6 bg-gray-100 min-h-screen text-gray-800 space-y-6">
-
       {/* Top Summary Cards */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white p-4 rounded shadow text-center">
           <div className="text-sm font-semibold text-gray-500">Total Commissions</div>
-          <div className="text-2xl font-bold text-green-600">${data.totalCommissions.toLocaleString()}</div>
+          <div className="text-2xl font-bold text-green-600">
+            ${data?.totalCommissions?.toLocaleString() ?? "0"}
+          </div>
           <div className="text-xs text-gray-400">~based on closed deals</div>
         </div>
         <div className="bg-white p-4 rounded shadow text-center">
           <div className="text-sm font-semibold text-gray-500">Commission Rate</div>
-          <div className="text-2xl font-bold text-blue-600">{data.commissionRate}%</div>
+          <div className="text-2xl font-bold text-blue-600">
+            {data?.commissionRate ?? 0}%
+          </div>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ const DealsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {data.allDeals.map((deal, index) => (
+            {(data?.allDeals ?? []).map((deal, index) => (
               <tr key={index} className="hover:bg-gray-100 text-sm">
                 <td className="p-2">{index + 1}</td>
                 <td className="p-2">{deal.ClientName}</td>
@@ -94,7 +94,7 @@ const DealsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {data.pendingPayments.map((item, idx) => (
+              {(data?.pendingPayments ?? []).map((item, idx) => (
                 <tr key={idx} className="border-t">
                   <td className="p-1">{item.ClientName}</td>
                   <td className="p-1">{item.Comission}</td>
@@ -118,7 +118,7 @@ const DealsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {data.topCommissions.map((item, idx) => (
+              {(data?.topCommissions ?? []).map((item, idx) => (
                 <tr key={idx} className="border-t">
                   <td className="p-1">{item.ClientName}</td>
                   <td className="p-1">{item.Comission}</td>

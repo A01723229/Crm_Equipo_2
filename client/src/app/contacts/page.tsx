@@ -12,18 +12,15 @@ const CustomersPage = () => {
   const isUser = user?.isLogin;
 
   if (userLoading || dataLoading) {
-    return <div className="pt-20 pl-20 bg-gray-100 text-gray-600">Loading clients...</div>;
+    console.log("Loading clients or user data...");
+  }
+
+  if (error || !data || !data.clientList) {
+    console.log("Failed to load clients.");
   }
 
   if (!isUser) {
     return <LogInBox />;
-  }
-
-  if (error || !data || !data.clientList) {
-    console.log('Falied to load tasks');
-    return (
-      <div className=""></div>
-    );
   }
 
   return (
@@ -53,7 +50,7 @@ const CustomersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {data.clientList.map((client, index) => (
+          {(data?.clientList ?? []).map((client, index) => (
             <tr
               key={index}
               className="hover:bg-gray-100 cursor-pointer text-gray-800"

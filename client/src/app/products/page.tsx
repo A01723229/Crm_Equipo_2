@@ -11,18 +11,15 @@ const ProductsPage = () => {
   const isUser = user?.isLogin;
 
   if (userLoading || dataLoading) {
-    return <div className="pt-20 pl-20 bg-gray-100 text-gray-600">Loading products...</div>;
+    console.log('Loading products or user info...');
+  }
+
+  if (error || !data || !data.products) {
+    console.log('Failed to load products.');
   }
 
   if (!isUser) {
     return <LogInBox />;
-  }
-
-  if (error || !data || !data.products) {
-    console.log('Falied to load tasks');
-    return (
-      <div className=""></div>
-    );
   }
 
   return (
@@ -49,7 +46,7 @@ const ProductsPage = () => {
           </tr>
         </thead>
         <tbody>
-          {data.products.map((product, index) => (
+          {data?.products?.map((product, index) => (
             <tr key={index} className="hover:bg-gray-100 text-sm">
               <td className="p-2">{index + 1}</td>
               <td className="p-2">{product.Name}</td>
