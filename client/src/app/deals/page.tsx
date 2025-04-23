@@ -95,20 +95,23 @@ const DealsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {(data?.allDeals ?? []).map((deal, index) => (
-              <tr
-                key={index}
-                onClick={() => setSelectedDeal(deal)}
-                className={`cursor-pointer text-sm ${selectedDeal?.DealID === deal.DealID ? "bg-blue-100" : "hover:bg-gray-100"}`}
-              >
-                <td className="p-2">{index + 1}</td>
-                <td className="p-2">{deal.ClientName}</td>
-                <td className="p-2">{Number(deal.DealValue).toLocaleString()}</td>
-                <td className="p-2">{Number(deal.Comission).toLocaleString()}</td>
-                <td className="p-2">{new Date(deal.DealDate).toLocaleDateString()}</td>
-                <td className="p-2">{deal.PaymentStatus}</td>
-              </tr>
-            ))}
+            {(data?.allDeals ?? []).map((deal, index) => {
+              const isSelected = selectedDeal?.DealDate === deal.DealDate && selectedDeal?.ClientName === deal.ClientName;
+              return (
+                <tr
+                  key={index}
+                  onClick={() => setSelectedDeal(deal)}
+                  className={`cursor-pointer text-sm ${isSelected ? "bg-blue-100" : "hover:bg-gray-100"}`}
+                >
+                  <td className="p-2">{index + 1}</td>
+                  <td className="p-2">{deal.ClientName}</td>
+                  <td className="p-2">{Number(deal.DealValue).toLocaleString()}</td>
+                  <td className="p-2">{Number(deal.Comission).toLocaleString()}</td>
+                  <td className="p-2">{new Date(deal.DealDate).toLocaleDateString()}</td>
+                  <td className="p-2">{deal.PaymentStatus}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

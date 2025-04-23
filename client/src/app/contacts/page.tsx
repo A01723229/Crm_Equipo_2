@@ -80,19 +80,22 @@ const CustomersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {(data?.clientList ?? []).map((client, index) => (
-            <tr
-              key={index}
-              onClick={() => setSelectedClient(client)}
-              className={`cursor-pointer text-gray-800 ${selectedClient?.ClientID === client.ClientID ? "bg-blue-100" : "hover:bg-gray-100"}`}
-            >
-              <td className="p-2 font-medium">{index + 1}</td>
-              <td className="p-2 font-medium">{client.ClientName}</td>
-              <td className="p-2">{client.Company}</td>
-              <td className="p-2">{client.Telephone}</td>
-              <td className="p-2">{client.Email}</td>
-            </tr>
-          ))}
+          {(data?.clientList ?? []).map((client, index) => {
+            const isSelected = selectedClient?.Email === client.Email && selectedClient?.Telephone === client.Telephone;
+            return (
+              <tr
+                key={index}
+                onClick={() => setSelectedClient(client)}
+                className={`cursor-pointer text-gray-800 ${isSelected ? "bg-blue-100" : "hover:bg-gray-100"}`}
+              >
+                <td className="p-2 font-medium">{index + 1}</td>
+                <td className="p-2 font-medium">{client.ClientName}</td>
+                <td className="p-2">{client.Company}</td>
+                <td className="p-2">{client.Telephone}</td>
+                <td className="p-2">{client.Email}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
