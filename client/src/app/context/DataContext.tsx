@@ -77,15 +77,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         credentials: "include",
         body: JSON.stringify(payload),
       });
+  
+      const responseText = await response.text();
+      console.log("Response Text:", responseText);
+  
       if (!response.ok) {
-        console.error("Modify failed:", await response.text());
+        console.error("Modify failed:", responseText);
       } else {
         console.log("Modify succeeded");
       }
     } catch (err) {
       console.error("Modify request error:", err);
     }
-  };  
+  };
+  
   
   const deleteItem = async (section: string, id: string) => {
     await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
