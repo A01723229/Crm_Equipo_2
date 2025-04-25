@@ -41,7 +41,7 @@ exports.updateClient = async (req, res) => {
     await pool.request()
       .input("ClientID", sql.Int, req.params.id)
       .input("ClientName", sql.VarChar, ClientName)
-      .input("Company", sql.VarChar, Company)
+      .input("Organization", sql.VarChar, Company)
       .input("Description", sql.VarChar, Description)
       .input("Telephone", sql.VarChar, Telephone)
       .input("Email", sql.VarChar, Email)
@@ -52,6 +52,7 @@ exports.updateClient = async (req, res) => {
     res.status(500).json({ error: "Failed to update client" });
   }
 };
+
 
 exports.deleteClient = async (req, res) => {
   try {
