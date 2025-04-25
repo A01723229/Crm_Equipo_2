@@ -45,12 +45,13 @@ export default function Login() {
       }
   
       setUser({
-        sellerName: data.seller.name,
-        company: data.seller.company,
-        role: data.seller.role,
-        email: data.seller.email,
+        sellerName: data.seller.SellerName,
+        company: data.seller.Company,
+        role: data.seller.Role,
+        email: data.seller.Email,
         isLogin: true,
       });
+      
       router.push("/");
   
     } catch (err) {
