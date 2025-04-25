@@ -37,22 +37,26 @@ exports.addClient = async (req, res) => {
 exports.updateClient = async (req, res) => {
   try {
     const { ClientName, Company, Description, Telephone, Email } = req.body;
+
+    console.log("UPDATE CLIENT REQUEST BODY:", { ClientName, Company, Description, Telephone, Email });
+
     const pool = await poolPromise;
     await pool.request()
       .input("ClientID", sql.Int, req.params.id)
       .input("ClientName", sql.VarChar, ClientName)
-      .input("Organization", sql.VarChar, Company)
+      .input("Organization", sql.VarChar, Company) 
       .input("Description", sql.VarChar, Description)
       .input("Telephone", sql.VarChar, Telephone)
       .input("Email", sql.VarChar, Email)
       .execute("UpdateClient");
+      
     res.json({ message: "Client updated" });
+
   } catch (err) {
     console.error("UpdateClient error:", err);
     res.status(500).json({ error: "Failed to update client" });
   }
 };
-
 
 exports.deleteClient = async (req, res) => {
   try {
