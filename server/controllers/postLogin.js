@@ -39,11 +39,11 @@ const postLogin = async (req, res) => {
 
     const token = jwt.sign(
       {
-        SellerID: seller.SellerID,     
+        SellerID: seller.SellerID,   // ✅ Correct field
         SellerName: seller.SellerName,
         Email: seller.Email,
         Role: seller.Role,
-        Company: seller.Company
+        Company: seller.Company,
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -53,7 +53,7 @@ const postLogin = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     console.log("Login successful for:", email);
@@ -61,11 +61,11 @@ const postLogin = async (req, res) => {
     res.json({
       message: "Login successful.",
       seller: {
-        SellerID: seller.SellerID,    
-        name: seller.SellerName,
-        email: seller.Email,
-        role: seller.Role,
-        company: seller.Company,
+        SellerID: seller.SellerID,
+        SellerName: seller.SellerName,
+        Email: seller.Email,
+        Role: seller.Role,
+        Company: seller.Company,
       },
     });
 
