@@ -60,7 +60,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // --- CRUD FUNCTIONS ---
   const addItem = async (section: string, payload: any) => {
-    await fetch(`/api/${section}`, {
+    await fetch(`https://crm-equipo-2.vercel.app/api/${section}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -68,9 +68,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     await fetchData();
   };
-
+  
   const modifyItem = async (section: string, id: string, payload: any) => {
-    await fetch(`/api/${section}/${id}`, {
+    await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -78,14 +78,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
     await fetchData();
   };
-
+  
   const deleteItem = async (section: string, id: string) => {
-    await fetch(`/api/${section}/${id}`, {
+    await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
     await fetchData();
-  };
+  };  
 
   return (
     <DataContext.Provider
