@@ -74,7 +74,7 @@ const CustomersPage = () => {
           <tr className="border-b font-bold text-sm bg-gray-200 text-gray-900">
             <th className="p-2">#</th>
             <th className="p-2">Client Name</th>
-            <th className="p-2">Organization</th>
+            <th className="p-2">Company</th>
             <th className="p-2">Telephone</th>
             <th className="p-2">Email</th>
           </tr>

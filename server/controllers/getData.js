@@ -42,7 +42,18 @@ const getData = async (req, res) => {
     const pendingPayments = results[11].recordset || [];
     const topCommissions = results[12].recordset || [];
     const allDeals = results[13].recordset || [];
-    const clientList = results[14].recordset || [];
+
+    const rawClientList = results[14].recordset || [];
+    const clientList = rawClientList.map(client => ({
+      ClientID: client.ClientID,
+      ClientName: client.ClientName,
+      Company: client.Organization,
+      Description: client.Description,
+      Telephone: client.Telephone,
+      Email: client.Email,
+      SellerID: client.SellerID,
+    }));
+
     const tasks = results[15].recordset || [];
     const products = results[16].recordset || [];
 
