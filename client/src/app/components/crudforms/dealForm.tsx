@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { useData } from "../../context/DataContext";
 
@@ -40,6 +41,13 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const selectedClient = data?.clientList.find(c => c.ClientID === Number(clientID));
+
+    if (!selectedClient?.SellerID) {
+      alert("Selected client does not have an assigned seller.");
+      return;
+    }
+
     const payload = {
       DealValue: dealValue,
       Comission: comission,
@@ -47,7 +55,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       PaymentStatus: paymentStatus,
       Description: description,
       ClientID: Number(clientID),
-      SellerID: data?.clientList.find(c => c.ClientID === clientID)?.SellerID || 1
+      SellerID: selectedClient.SellerID,
     };
 
     if (mode === "add") {
