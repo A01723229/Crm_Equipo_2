@@ -39,11 +39,11 @@ const postLogin = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: seller.SellerID,
-        email: seller.Email,
-        role: seller.Role,
-        name: seller.SellerName,
-        company: seller.Company,
+        SellerID: seller.SellerID,     
+        SellerName: seller.SellerName,
+        Email: seller.Email,
+        Role: seller.Role,
+        Company: seller.Company
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -61,6 +61,7 @@ const postLogin = async (req, res) => {
     res.json({
       message: "Login successful.",
       seller: {
+        SellerID: seller.SellerID,    
         name: seller.SellerName,
         email: seller.Email,
         role: seller.Role,
