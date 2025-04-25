@@ -70,14 +70,22 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   
   const modifyItem = async (section: string, id: string, payload: any) => {
-    await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(payload),
-    });
-    await fetchData();
-  };
+    try {
+      const response = await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) {
+        console.error("Modify failed:", await response.text());
+      } else {
+        console.log("Modify succeeded");
+      }
+    } catch (err) {
+      console.error("Modify request error:", err);
+    }
+  };  
   
   const deleteItem = async (section: string, id: string) => {
     await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
