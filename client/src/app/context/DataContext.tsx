@@ -37,14 +37,16 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
       return;
     }
-
+  
     setLoading(true);
     try {
       const res = await fetch("https://crm-equipo-2.vercel.app/api/data", {
         credentials: 'include',
       });
       if (!res.ok) throw new Error("Failed to fetch data");
+  
       const jsonData: Data = await res.json();
+      console.log("All Deals from server:", jsonData.allDeals);
       setData(jsonData);
     } catch (err) {
       console.error("Data fetch error:", err);
@@ -52,8 +54,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setLoading(false);
     }
-    console.log("All Deals:", data?.allDeals);
   };
+  
 
   useEffect(() => {
     fetchData();
