@@ -60,12 +60,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // --- CRUD FUNCTIONS ---
   const addItem = async (section: string, payload: any) => {
-    await fetch(`https://crm-equipo-2.vercel.app/api/${section}`, {
+    const res = await fetch(`https://crm-equipo-2.vercel.app/api/${section}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify(payload),
     });
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Add failed:", errorText);
+      throw new Error("Failed to add item");
+    }
     await fetchData();
   };
   
@@ -85,18 +90,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error("Modify failed:", responseText);
       } else {
         console.log("Modify succeeded");
+        await fetchData(); // <-- THIS was missing
       }
     } catch (err) {
       console.error("Modify request error:", err);
     }
   };
   
-  
   const deleteItem = async (section: string, id: string) => {
-    await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
+    const res = await fetch(`https://crm-equipo-2.vercel.app/api/${section}/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Delete failed:", errorText);
+      throw new Error("Failed to delete item");
+    }
     await fetchData();
   };  
 

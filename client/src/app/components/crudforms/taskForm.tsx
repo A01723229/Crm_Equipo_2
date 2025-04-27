@@ -26,6 +26,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
   const [deadLine, setDeadLine] = useState("");
   const [stage, setStage] = useState("Requested");
   const [dealID, setDealID] = useState<number | "">("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -41,6 +42,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const payload = {
       Title: title,
@@ -58,47 +60,52 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       await modifyItem("tasks", String(initialData.TaskID), payload);
     }
 
+    setLoading(false);
     onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
-      <h2 className="text-lg font-bold text-gray-800">
+      <h2 className="text-xl font-bold text-gray-900">
         {mode === "add" ? "Add New Task" : "Edit Task"}
       </h2>
 
+      {/* Title */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Title</label>
+        <label className="block text-sm font-medium text-gray-900">Title</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded text-gray-900"
         />
       </div>
 
+      {/* Status */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Status</label>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-2 border rounded">
+        <label className="block text-sm font-medium text-gray-900">Status</label>
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-2 border rounded text-gray-900">
           <option value="Pending">Pending</option>
           <option value="In Progress">In Progress</option>
           <option value="Completed">Completed</option>
         </select>
       </div>
 
+      {/* Priority */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Priority</label>
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full p-2 border rounded">
+        <label className="block text-sm font-medium text-gray-900">Priority</label>
+        <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full p-2 border rounded text-gray-900">
           <option value="Critical">Critical</option>
           <option value="High">High</option>
           <option value="Low">Low</option>
         </select>
       </div>
 
+      {/* Stage */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Stage</label>
-        <select value={stage} onChange={(e) => setStage(e.target.value)} className="w-full p-2 border rounded">
+        <label className="block text-sm font-medium text-gray-900">Stage</label>
+        <select value={stage} onChange={(e) => setStage(e.target.value)} className="w-full p-2 border rounded text-gray-900">
           <option value="Requested">Requested</option>
           <option value="Ready to Start">Ready to Start</option>
           <option value="Working">Working</option>
@@ -108,19 +115,21 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
+      {/* Deadline */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Deadline</label>
+        <label className="block text-sm font-medium text-gray-900">Deadline</label>
         <input
           type="date"
           value={deadLine}
           onChange={(e) => setDeadLine(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded text-gray-900"
         />
       </div>
 
+      {/* Deal */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Deal</label>
-        <select value={dealID} onChange={(e) => setDealID(Number(e.target.value))} className="w-full p-2 border rounded">
+        <label className="block text-sm font-medium text-gray-900">Deal</label>
+        <select value={dealID} onChange={(e) => setDealID(Number(e.target.value))} className="w-full p-2 border rounded text-gray-900">
           <option value="">Select a deal</option>
           {data?.allDeals.map((deal) => (
             <option key={deal.DealID} value={deal.DealID}>
@@ -130,21 +139,31 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
+      {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-medium text-gray-900">Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded text-gray-900"
         />
       </div>
 
+      {/* Buttons */}
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-900 px-4 py-2 rounded"
+        >
           Cancel
         </button>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          {mode === "add" ? "Add Task" : "Save Changes"}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
+          {loading ? "Saving..." : mode === "add" ? "Add Task" : "Save Changes"}
         </button>
       </div>
     </form>
