@@ -42,6 +42,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!dealID) {
+      alert("Please select a deal before saving the task.");
+      return;
+    }
+
     setLoading(true);
 
     const payload = {
@@ -51,7 +57,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       Description: description,
       DeadLine: deadLine,
       Stage: stage,
-      DealID: dealID ? Number(dealID) : null,
+      DealID: Number(dealID),
     };
 
     if (mode === "add") {
