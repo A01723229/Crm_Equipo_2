@@ -47,6 +47,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
       const jsonData: Data = await res.json();
       console.log("All Deals from server:", jsonData.allDeals);
+      console.log("All Clients from server:", jsonData.clientList);
+      console.log("All Tasks from server:", jsonData.tasks);
+      console.log("All Products from server:", jsonData.products);
       setData(jsonData);
     } catch (err) {
       console.error("Data fetch error:", err);
