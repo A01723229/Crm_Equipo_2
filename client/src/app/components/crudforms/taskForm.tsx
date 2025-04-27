@@ -42,14 +42,14 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!dealID) {
-      alert("Please select a deal before saving the task.");
+  
+    if (!dealID || isNaN(Number(dealID))) {
+      alert("Please select a valid deal before saving the task.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     const payload = {
       Title: title,
       Status: status,
@@ -59,18 +59,19 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       Stage: stage,
       DealID: Number(dealID),
     };
-    
+  
     console.log("Submitting payload:", payload);
-
+  
     if (mode === "add") {
       await addItem("tasks", payload);
     } else if (mode === "edit" && initialData?.TaskID) {
       await modifyItem("tasks", String(initialData.TaskID), payload);
     }
-
+  
     setLoading(false);
     onClose();
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
