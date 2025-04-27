@@ -59,6 +59,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       Stage: stage,
       DealID: Number(dealID),
     };
+    
+    console.log("Submitting payload:", payload);
 
     if (mode === "add") {
       await addItem("tasks", payload);
