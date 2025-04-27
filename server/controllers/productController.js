@@ -1,3 +1,5 @@
+const { sql, poolPromise } = require("../database/db");
+
 exports.addProduct = async (req, res) => {
     try {
       const { Name, Description, Category, Price } = req.body;

@@ -1,3 +1,5 @@
+const { sql, poolPromise } = require("../database/db");
+
 exports.addTask = async (req, res) => {
     try {
       const { Title, Status, Priority, Description, DeadLine, Stage, DealID } = req.body;

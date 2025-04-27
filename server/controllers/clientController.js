@@ -32,8 +32,6 @@ exports.addClient = async (req, res) => {
   }
 };
 
-
-
 exports.updateClient = async (req, res) => {
   try {
     const { ClientName, Company, Description, Telephone, Email } = req.body;
