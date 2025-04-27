@@ -97,6 +97,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (err) {
       console.error("Modify request error:", err);
+      throw err;
     }
   };
   

@@ -35,6 +35,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const payload = {
       ClientName: clientName,
       Company: company,
@@ -43,13 +44,19 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Email: email,
     };
 
-    if (mode === "add") {
-      await addItem("clients", payload);
-    } else if (mode === "edit" && initialData?.ClientID) {
-      await modifyItem("clients", String(initialData.ClientID), payload);
-    }
+    console.log("Submitting client payload:", payload);
 
-    onClose();
+    try {
+      if (mode === "add") {
+        await addItem("clients", payload);
+      } else if (mode === "edit" && initialData?.ClientID) {
+        await modifyItem("clients", String(initialData.ClientID), payload);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error submitting client form:", error);
+      alert("Failed to save client. Please try again.");
+    }
   };
 
   return (
@@ -109,10 +116,17 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       </div>
 
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 px-4 py-2 rounded"
+        >
           Cancel
         </button>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
           {mode === "add" ? "Add Client" : "Save Changes"}
         </button>
       </div>
