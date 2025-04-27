@@ -35,6 +35,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("handleSubmit called, mode:", mode, "initialData:", initialData);
 
     const payload = {
       ClientName: clientName,
