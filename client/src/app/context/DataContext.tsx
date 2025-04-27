@@ -52,6 +52,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setLoading(false);
     }
+    console.log("All Deals:", data?.allDeals);
   };
 
   useEffect(() => {
