@@ -25,7 +25,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
   const [description, setDescription] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [stage, setStage] = useState("Requested");
-  const [dealID, setDealID] = useState<number | undefined>(undefined);
+  const [dealID, setDealID] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       setDescription(initialData.Description ?? "");
       setDeadLine(initialData.DeadLine ?? "");
       setStage(initialData.Stage);
-      setDealID(initialData.DealID);
+      setDealID(String(initialData.DealID));
     }
   }, [mode, initialData]);
 
@@ -51,7 +51,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       Description: description,
       DeadLine: deadLine,
       Stage: stage,
-      DealID: dealID,
+      DealID: dealID ? Number(dealID) : null,
     };
 
     if (mode === "add") {
@@ -136,14 +136,14 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
             if (value === "") {
               setDealID(undefined);
             } else {
-              setDealID(Number(value));
+              setDealID(value);
             }
           }}
           className="w-full p-2 border rounded text-gray-900"
         >
           <option value="">Select a deal</option>
           {data?.allDeals.map((deal) => (
-            <option key={deal.DealID} value={deal.DealID}>
+            <option key={deal.DealID} value={String(deal.DealID)}>
               {deal.ClientName} - ${deal.DealValue}
             </option>
           ))}
