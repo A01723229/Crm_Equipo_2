@@ -2,7 +2,8 @@ const { sql, poolPromise } = require("../database/db");
 
 exports.addClient = async (req, res) => {
   try {
-    const { ClientName, Company, Description, Telephone, Email, SellerID } = req.body;
+    const { ClientName, Company, Description, Telephone, Email } = req.body;
+    const sellerId = req.user?.SellerID;
     const pool = await poolPromise;
 
     await pool.request()
@@ -11,7 +12,7 @@ exports.addClient = async (req, res) => {
       .input("Description", sql.VarChar, Description)
       .input("Telephone", sql.VarChar, Telephone)
       .input("Email", sql.VarChar, Email)
-      .input("SellerID", sql.Int, SellerID)
+      .input("SellerID", sql.Int, sellerId)
       .execute("AddClient");
 
     res.status(201).json({ message: "Client added successfully" });
