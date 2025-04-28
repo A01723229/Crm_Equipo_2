@@ -4,7 +4,7 @@ import { useData } from "../../context/DataContext";
 interface ClientFormProps {
   mode: "add" | "edit";
   initialData?: {
-    ClientID?: number;
+    ClientId?: number;
     ClientName: string;
     Company: string;
     Description: string;
@@ -50,8 +50,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
     try {
       if (mode === "add") {
         await addItem("clients", payload);
-      } else if (mode === "edit" && initialData?.ClientID) {
-        await modifyItem("clients", String(initialData.ClientID), payload);
+      } else if (mode === "edit" && initialData?.ClientId) {
+        await modifyItem("clients", String(initialData.ClientId), payload);
       }
       onClose();
     } catch (error) {

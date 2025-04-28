@@ -33,7 +33,7 @@ export interface TaskStat {
   }  
   
   export interface Client {
-    ClientID: number;
+    ClientId: number;
     ClientName: string;
     Company: string; 
     Description: string;
