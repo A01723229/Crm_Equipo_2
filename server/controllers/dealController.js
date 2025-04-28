@@ -2,7 +2,7 @@ const { sql, poolPromise } = require("../database/db");
 
 exports.addDeal = async (req, res) => {
   try {
-    const { DealValue, Comission, DeadLine, PaymentStatus, Description, ClientId } = req.body;
+    const { DealValue, Comission, DeadLine, PaymentStatus, Description, ClientID } = req.body;
     const sellerId = req.user?.SellerID;
     const pool = await poolPromise;
     await pool.request()
@@ -11,7 +11,7 @@ exports.addDeal = async (req, res) => {
       .input("DeadLine", sql.Date, DeadLine)
       .input("PaymentStatus", sql.VarChar, PaymentStatus)
       .input("Description", sql.VarChar, Description)
-      .input("ClientID", sql.Int, ClientId) 
+      .input("ClientID", sql.Int, ClientID) 
       .input("SellerID", sql.Int, sellerId)
       .execute("AddDeal");
     res.status(201).json({ message: "Deal added" });
@@ -23,7 +23,7 @@ exports.addDeal = async (req, res) => {
 
 exports.updateDeal = async (req, res) => {
   try {
-    const { DealValue, Comission, DeadLine, PaymentStatus, Description, ClientId } = req.body; 
+    const { DealValue, Comission, DeadLine, PaymentStatus, Description, ClientID } = req.body; 
     const pool = await poolPromise;
     await pool.request()
       .input("DealID", sql.Int, req.params.id)
@@ -32,7 +32,7 @@ exports.updateDeal = async (req, res) => {
       .input("DeadLine", sql.Date, DeadLine)
       .input("PaymentStatus", sql.VarChar, PaymentStatus)
       .input("Description", sql.VarChar, Description)
-      .input("ClientID", sql.Int, ClientId) 
+      .input("ClientID", sql.Int, ClientID) 
       .execute("UpdateDeal");
     res.json({ message: "Deal updated" });
   } catch (err) {
