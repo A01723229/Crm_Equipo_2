@@ -18,11 +18,11 @@ interface DealFormProps {
 const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const { addItem, modifyItem, data } = useData();
 
-  const [dealValue, setDealValue] = useState(0);
-  const [comission, setComission] = useState(0);
-  const [deadLine, setDeadLine] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("Pending");
-  const [description, setDescription] = useState("");
+  const [dealValue, setDealValue] = useState<number>(0);
+  const [comission, setComission] = useState<number>(0);
+  const [deadLine, setDeadLine] = useState<string>("");
+  const [paymentStatus, setPaymentStatus] = useState<string>("Pending");
+  const [description, setDescription] = useState<string>("");
   const [clientID, setClientID] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
@@ -40,9 +40,26 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate ClientId
+    // Validate fields before submission
+    if (isNaN(dealValue) || dealValue <= 0) {
+      alert("Please enter a valid deal value.");
+      return;
+    }
+
+    if (isNaN(comission) || comission <= 0) {
+      alert("Please enter a valid commission.");
+      return;
+    }
+
     if (!clientID || isNaN(Number(clientID))) {
       alert("Please select a valid client.");
+      return;
+    }
+
+    const selectedClient = data?.clientList.find((c) => c.ClientId === Number(clientID));
+
+    if (!selectedClient?.ClientId) {
+      alert("Selected client is invalid.");
       return;
     }
 
@@ -52,7 +69,8 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       DeadLine: deadLine,
       PaymentStatus: paymentStatus,
       Description: description,
-      ClientID: Number(clientID),  // Only pass ClientID
+      ClientID: Number(clientID),
+      SellerID: selectedClient.SellerID, // This will be handled on the backend
     };
 
     console.log("Submitting payload:", payload);
@@ -61,11 +79,11 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
 
     try {
       if (mode === "add") {
-        await addItem("deals", payload);  // Add new deal
+        await addItem("deals", payload); // Add new deal
       } else if (mode === "edit" && initialData?.DealId) {
-        await modifyItem("deals", String(initialData.DealId), payload);  // Modify existing deal
+        await modifyItem("deals", String(initialData.DealId), payload); // Modify existing deal
       }
-      onClose();  // Close the form after submission
+      onClose(); // Close the form after submission
     } catch (error) {
       console.error("Error submitting deal form:", error);
       alert("Failed to save deal. Please try again.");
