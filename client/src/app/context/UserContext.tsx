@@ -1,4 +1,4 @@
-// UserContext.tsx
+"use client";
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User } from "../interfaces/user"; // Ensure your interface includes SellerID, etc.
 
