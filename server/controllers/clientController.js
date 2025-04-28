@@ -2,17 +2,8 @@ const { sql, poolPromise } = require("../database/db");
 
 exports.addClient = async (req, res) => {
   try {
-    const { ClientName, Company, Description, Telephone, Email } = req.body;
-    const sellerId = req.user?.SellerID;
-
-    console.log("Decoded user:", req.user);
-    console.log("Adding client:", { ClientName, Company, Telephone, Email, SellerID: sellerId });
-
-    if (!sellerId) {
-      console.error("SellerID not found on req.user");
-      return res.status(400).json({ error: "SellerID not found in user token" });
-    }
-
+    const { ClientName, Company, Description, Telephone, Email, SellerID } = req.body;
+    
     const pool = await poolPromise;
     await pool.request()
       .input("ClientName", sql.VarChar, ClientName)
@@ -20,11 +11,9 @@ exports.addClient = async (req, res) => {
       .input("Description", sql.VarChar, Description)
       .input("Telephone", sql.VarChar, Telephone)
       .input("Email", sql.VarChar, Email)
-      .input("SellerID", sql.Int, sellerId)
+      .input("SellerID", sql.Int, SellerID) 
       .execute("AddClient");
-
-    console.log("Client added successfully!");
-
+      
     res.status(201).json({ message: "Client added" });
   } catch (err) {
     console.error("AddClient error:", err);
@@ -34,13 +23,11 @@ exports.addClient = async (req, res) => {
 
 exports.updateClient = async (req, res) => {
   try {
-    const { ClientID, ClientName, Company, Description, Telephone, Email } = req.body;
-
-    console.log("UPDATE CLIENT REQUEST BODY:", { ClientID, ClientName, Company, Description, Telephone, Email });
+    const { ClientId, ClientName, Company, Description, Telephone, Email } = req.body;
 
     const pool = await poolPromise;
     await pool.request()
-      .input("ClientID", sql.Int, ClientID)
+      .input("ClientId", sql.Int, ClientId)
       .input("ClientName", sql.VarChar, ClientName)
       .input("Company", sql.VarChar, Company)
       .input("Description", sql.VarChar, Description)
@@ -49,12 +36,12 @@ exports.updateClient = async (req, res) => {
       .execute("UpdateClient");
       
     res.json({ message: "Client updated" });
-
   } catch (err) {
     console.error("UpdateClient error:", err);
     res.status(500).json({ error: "Failed to update client" });
   }
 };
+
 
 exports.deleteClient = async (req, res) => {
   try {
