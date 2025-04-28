@@ -36,13 +36,13 @@ exports.updateClient = async (req, res) => {
   try {
     const { ClientID, ClientName, Company, Description, Telephone, Email } = req.body;
 
-    console.log("UPDATE CLIENT REQUEST BODY:", { ClientId, ClientName, Company, Description, Telephone, Email });
+    console.log("UPDATE CLIENT REQUEST BODY:", { ClientID, ClientName, Company, Description, Telephone, Email });
 
     const pool = await poolPromise;
     await pool.request()
       .input("ClientID", sql.Int, ClientID)
       .input("ClientName", sql.VarChar, ClientName)
-      .input("Company", sql.VarChar, Company) 
+      .input("Company", sql.VarChar, Company)
       .input("Description", sql.VarChar, Description)
       .input("Telephone", sql.VarChar, Telephone)
       .input("Email", sql.VarChar, Email)

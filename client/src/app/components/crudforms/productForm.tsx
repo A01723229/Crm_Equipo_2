@@ -1,65 +1,92 @@
 import React, { useState, useEffect } from "react";
 import { useData } from "../../context/DataContext";
 
-interface ProductFormProps {
+interface ClientFormProps {
   mode: "add" | "edit";
   initialData?: {
-    ProductID?: number;
-    Name: string;
+    ClientId?: number;
+    ClientName: string;
+    Company: string;
     Description: string;
-    Category: string;
-    Price: number;
+    Telephone: string;
+    Email: string;
   };
   onClose: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ mode, initialData, onClose }) => {
+const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) => {
   const { addItem, modifyItem } = useData();
 
-  const [name, setName] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [company, setCompany] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState(0);
+  const [telephone, setTelephone] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      setName(initialData.Name);
+      setClientName(initialData.ClientName);
+      setCompany(initialData.Company);
       setDescription(initialData.Description);
-      setCategory(initialData.Category);
-      setPrice(initialData.Price);
+      setTelephone(initialData.Telephone);
+      setEmail(initialData.Email);
     }
   }, [mode, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { Name: name, Description: description, Category: category, Price: price };
 
-    if (mode === "add") {
-      await addItem("products", payload);
-    } else if (mode === "edit" && initialData?.ProductID) {
-      await modifyItem("products", String(initialData.ProductID), payload);
+    const payload = {
+      ClientName: clientName,
+      Company: company,
+      Description: description,
+      Telephone: telephone,
+      Email: email,
+    };
+
+    try {
+      if (mode === "add") {
+        await addItem("clients", payload);
+      } else if (mode === "edit" && initialData?.ClientId) {
+        await modifyItem("clients", String(initialData.ClientId), payload);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error submitting client form:", error);
+      alert("Failed to save client. Please try again.");
     }
-
-    onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
       <h2 className="text-lg font-bold text-gray-800">
-        {mode === "add" ? "Add New Product" : "Edit Product"}
+        {mode === "add" ? "Add New Client" : "Edit Client"}
       </h2>
 
+      {/* Client Name */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Name</label>
         <input
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
           required
           className="w-full p-2 border rounded"
         />
       </div>
 
+      {/* Company */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Company</label>
+        <input
+          type="text"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      {/* Description */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Description</label>
         <textarea
@@ -69,38 +96,39 @@ const ProductForm: React.FC<ProductFormProps> = ({ mode, initialData, onClose })
         />
       </div>
 
+      {/* Telephone */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Category</label>
+        <label className="block text-sm font-medium text-gray-700">Telephone</label>
         <input
           type="text"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={telephone}
+          onChange={(e) => setTelephone(e.target.value)}
           className="w-full p-2 border rounded"
         />
       </div>
 
+      {/* Email */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Price</label>
+        <label className="block text-sm font-medium text-gray-700">Email</label>
         <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(parseFloat(e.target.value))}
-          step="0.01"
-          min="0"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full p-2 border rounded"
         />
       </div>
 
+      {/* Buttons */}
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
           Cancel
         </button>
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          {mode === "add" ? "Add Product" : "Save Changes"}
+          {mode === "add" ? "Add Client" : "Save Changes"}
         </button>
       </div>
     </form>
   );
 };
 
-export default ProductForm;
+export default ClientForm;
