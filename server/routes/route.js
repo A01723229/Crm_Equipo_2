@@ -15,9 +15,6 @@ const router = express.Router();
 
 // Existing routes
 router.get("/data", getData);
-
-console.log("postLogin controller is:", postLogin);
-
 router.post("/login", postLogin);
 router.post("/signup", postSignup);
 router.get("/me", authMiddleware, getMe);
