@@ -31,11 +31,6 @@ exports.addTask = async (req, res) => {
   exports.updateTask = async (req, res) => {
     try {
       const { Title, Status, Priority, Description, DeadLine, Stage } = req.body;
-      const SellerID = req.user?.SellerID;
-  
-      if (!SellerID) {
-        return res.status(403).json({ error: "Unauthorized: SellerID not found in token." });
-      }
   
       const pool = await poolPromise;
       await pool.request()
@@ -46,7 +41,6 @@ exports.addTask = async (req, res) => {
         .input("Description", sql.VarChar, Description)
         .input("DeadLine", sql.Date, DeadLine)
         .input("Stage", sql.VarChar, Stage)
-        .input("SellerID", sql.Int, SellerID)
         .execute("UpdateTask");
   
       res.json({ message: "Task updated" });
