@@ -47,7 +47,7 @@ const getData = async (req, res) => {
     const clientList = rawClientList.map(client => ({
       ClientId: client.ClientId,
       ClientName: client.ClientName,
-      Company: client.Organization,
+      Company: client.Company,
       Description: client.Description,
       Telephone: client.Telephone,
       Email: client.Email,
