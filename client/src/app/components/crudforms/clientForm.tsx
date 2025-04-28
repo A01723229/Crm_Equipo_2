@@ -17,6 +17,7 @@ interface ClientFormProps {
 const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) => {
   const { addItem, modifyItem, data } = useData();
 
+  // State variables to manage form fields
   const [clientName, setClientName] = useState("");
   const [company, setCompany] = useState("");
   const [description, setDescription] = useState("");
@@ -24,6 +25,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
   const [email, setEmail] = useState("");
   const [clientId, setClientId] = useState<number | undefined>(undefined);
 
+  // Load initial data if in 'edit' mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setClientName(initialData.ClientName);
@@ -35,8 +37,15 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
     }
   }, [mode, initialData]);
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation check for ClientId
+    if (clientId === undefined || isNaN(clientId)) {
+      alert("Please select a valid client.");
+      return;
+    }
 
     const payload = {
       ClientName: clientName,
@@ -44,24 +53,26 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Description: description,
       Telephone: telephone,
       Email: email,
-      ClientId: clientId,
+      ClientId: clientId, // Pass ClientId as number
     };
 
     try {
+      // Check if the mode is 'add' or 'edit' and call the appropriate API method
       if (mode === "add") {
-        await addItem("clients", payload);
+        await addItem("clients", payload); // Add new client
       } else if (mode === "edit" && clientId !== undefined) {
-        await modifyItem("clients", String(clientId), payload);
+        await modifyItem("clients", String(clientId), payload); // Modify existing client
       }
-      onClose();
+      onClose(); // Close the form after submission
     } catch (error) {
       console.error("Error submitting client form:", error);
       alert("Failed to save client. Please try again.");
     }
   };
 
+  // Loading state while client data is fetched
   if (!data || !Array.isArray(data.clientList)) {
-    return <div>Loading...</div>;
+    return <div>Loading clients...</div>; // If data is not available yet
   }
 
   return (
@@ -70,6 +81,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         {mode === "add" ? "Add New Client" : "Edit Client"}
       </h2>
 
+      {/* Client Name Input */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Name</label>
         <input
@@ -81,6 +93,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         />
       </div>
 
+      {/* Company Input */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Company</label>
         <input
@@ -91,6 +104,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         />
       </div>
 
+      {/* Description Input */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Description</label>
         <textarea
@@ -100,6 +114,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         />
       </div>
 
+      {/* Telephone Input */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Telephone</label>
         <input
@@ -110,6 +125,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         />
       </div>
 
+      {/* Email Input */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Email</label>
         <input
@@ -120,13 +136,14 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         />
       </div>
 
+      {/* Client Dropdown */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Client</label>
         <select
           value={clientId ?? ""}
           onChange={(e) => {
             const value = e.target.value;
-            setClientId(value === "" ? undefined : Number(value));
+            setClientId(value === "" ? undefined : Number(value)); // Ensure value is a number
           }}
           className="w-full p-2 border rounded"
         >
@@ -139,11 +156,12 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         </select>
       </div>
 
+      {/* Buttons */}
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
           Cancel
         </button>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button type="submit" disabled={false} className="bg-blue-600 text-white px-4 py-2 rounded">
           {mode === "add" ? "Add Client" : "Save Changes"}
         </button>
       </div>
