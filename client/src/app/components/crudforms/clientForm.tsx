@@ -45,7 +45,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Description: description,
       Telephone: telephone,
       Email: email,
-      ClientId: clientId, // Ensure that ClientId is included
+      ClientId: clientId, 
     };
 
     console.log("Submitting client payload:", payload);

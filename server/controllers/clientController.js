@@ -42,7 +42,7 @@ exports.updateClient = async (req, res) => {
     await pool.request()
       .input("ClientID", sql.Int, req.params.id)
       .input("ClientName", sql.VarChar, ClientName)
-      .input("Organization", sql.VarChar, Company) 
+      .input("Company", sql.VarChar, Company) 
       .input("Description", sql.VarChar, Description)
       .input("Telephone", sql.VarChar, Telephone)
       .input("Email", sql.VarChar, Email)
