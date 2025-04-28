@@ -24,7 +24,7 @@ export interface TaskStat {
   }
   
   export interface Deal {
-    DealID: number;
+    DealId: number;
     ClientName: string;
     DealValue: number;
     Comission: number;

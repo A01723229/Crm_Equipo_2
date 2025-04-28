@@ -11,7 +11,7 @@ interface TaskFormProps {
     Description?: string;
     DeadLine?: string;
     Stage: string;
-    DealID: number;
+    DealId: number;
   };
   onClose: () => void;
 }
@@ -36,7 +36,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       setDescription(initialData.Description ?? "");
       setDeadLine(initialData.DeadLine ?? "");
       setStage(initialData.Stage);
-      setDealID(String(initialData.DealID));
+      setDealID(String(initialData.DealId));
     }
   }, [mode, initialData]);
 
@@ -57,7 +57,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       Description: description,
       DeadLine: deadLine,
       Stage: stage,
-      DealID: Number(dealID),
+      DealId: Number(dealID),
     };
   
     console.log("Submitting payload:", payload);
@@ -152,7 +152,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         >
           <option value="">Select a deal</option>
           {data?.allDeals.map((deal) => (
-            <option key={deal.DealID} value={String(deal.DealID)}>
+            <option key={deal.DealId} value={String(deal.DealId)}>
               {deal.ClientName} - ${deal.DealValue}
             </option>
           ))}
