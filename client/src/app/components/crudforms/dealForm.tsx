@@ -40,17 +40,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate fields before submission
-    if (isNaN(dealValue) || dealValue <= 0) {
-      alert("Please enter a valid deal value.");
-      return;
-    }
-
-    if (isNaN(comission) || comission <= 0) {
-      alert("Please enter a valid commission.");
-      return;
-    }
-
+    // Validation check for ClientId and other fields
     if (!clientID || isNaN(Number(clientID))) {
       alert("Please select a valid client.");
       return;
@@ -74,7 +64,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
     };
 
     console.log("Submitting payload:", payload);
-    
+
     setLoading(true);
 
     try {
