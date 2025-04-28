@@ -46,8 +46,8 @@ const getData = async (req, res) => {
     const rawClientList = results[14].recordset || [];
     const clientList = rawClientList.map(client => ({
       ClientID: client.ClientID,
-      ClientName: client.ClientName,
-      Company: client.Organization,
+      ClientName: client.ClientName, 
+      Company: client.Organization, 
       Description: client.Description,
       Telephone: client.Telephone,
       Email: client.Email,
@@ -77,7 +77,7 @@ const getData = async (req, res) => {
       products
     });
   } catch (err) {
-    console.error("Data Query Error:", err);
+    console.error("Data Query Error:", err.message || err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

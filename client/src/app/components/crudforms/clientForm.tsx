@@ -22,6 +22,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
   const [description, setDescription] = useState("");
   const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
+  const [clientId, setClientId] = useState<number | "">("");
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -30,6 +31,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       setDescription(initialData.Description);
       setTelephone(initialData.Telephone);
       setEmail(initialData.Email);
+      setClientId(initialData.ClientId ?? "");
     }
   }, [mode, initialData]);
 
@@ -43,6 +45,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Description: description,
       Telephone: telephone,
       Email: email,
+      ClientId: clientId, // Ensure that ClientId is included
     };
 
     console.log("Submitting client payload:", payload);
@@ -117,17 +120,10 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       </div>
 
       <div className="flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="bg-gray-300 px-4 py-2 rounded"
-        >
+        <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
           Cancel
         </button>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
           {mode === "add" ? "Add Client" : "Save Changes"}
         </button>
       </div>
