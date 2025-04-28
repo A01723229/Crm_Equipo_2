@@ -43,12 +43,21 @@ exports.updateDeal = async (req, res) => {
 
 exports.deleteDeal = async (req, res) => {
   try {
-    console.log("Deleting deal with ID:", req.params.id);
+    console.log("Received request to delete deal with ID:", req.params.id);
+
+    if (!req.params.id) {
+      console.error("No DealID provided in request");
+      return res.status(400).json({ error: "Deal ID is required" });
+    }
+
     const pool = await poolPromise;
-    await pool.request()
+    const deleteResult = await pool.request()
       .input("DealID", sql.Int, req.params.id)
       .execute("DeleteDeal");
-    res.json({ message: "Deal deleted" });
+
+    console.log("DeleteDeal result:", deleteResult);
+
+    res.json({ message: "Deal deleted successfully" });
   } catch (err) {
     console.error("DeleteDeal error:", err.message || err);
     return res.status(500).json({ error: "Failed to delete deal" });
