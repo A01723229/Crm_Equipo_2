@@ -22,7 +22,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
   const [description, setDescription] = useState("");
   const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
-  const [clientId, setClientId] = useState<number | "">("");
+  const [clientId, setClientId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -31,13 +31,12 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       setDescription(initialData.Description);
       setTelephone(initialData.Telephone);
       setEmail(initialData.Email);
-      setClientId(initialData.ClientId ?? "");
+      setClientId(initialData.ClientId);
     }
   }, [mode, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("handleSubmit called, mode:", mode, "initialData:", initialData);
 
     const payload = {
       ClientName: clientName,
@@ -45,7 +44,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Description: description,
       Telephone: telephone,
       Email: email,
-      ClientId: clientId, 
+      ClientId: clientId, // ClientId as a number
     };
 
     console.log("Submitting client payload:", payload);
@@ -53,8 +52,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
     try {
       if (mode === "add") {
         await addItem("clients", payload);
-      } else if (mode === "edit" && initialData?.ClientId) {
-        await modifyItem("clients", String(initialData.ClientId), payload);
+      } else if (mode === "edit" && clientId !== undefined) {
+        await modifyItem("clients", String(clientId), payload);
       }
       onClose();
     } catch (error) {
