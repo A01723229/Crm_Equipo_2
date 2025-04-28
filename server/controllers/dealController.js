@@ -2,7 +2,8 @@ const { sql, poolPromise } = require("../database/db");
 
 exports.addDeal = async (req, res) => {
   try {
-    const { DealValue, Comission, DeadLine, PaymentStatus, Description, ClientId, SellerID } = req.body;
+    const { DealValue, Comission, DeadLine, PaymentStatus, Description, ClientId } = req.body;
+    const sellerId = req.user?.SellerID;
     const pool = await poolPromise;
     await pool.request()
       .input("DealValue", sql.Decimal(18, 2), DealValue)  
@@ -11,7 +12,7 @@ exports.addDeal = async (req, res) => {
       .input("PaymentStatus", sql.VarChar, PaymentStatus)
       .input("Description", sql.VarChar, Description)
       .input("ClientID", sql.Int, ClientId) 
-      .input("SellerID", sql.Int, SellerID)
+      .input("SellerID", sql.Int, sellerId)
       .execute("AddDeal");
     res.status(201).json({ message: "Deal added" });
   } catch (err) {
