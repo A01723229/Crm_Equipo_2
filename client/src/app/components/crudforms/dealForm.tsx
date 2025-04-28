@@ -34,39 +34,44 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       setDeadLine(initialData.DeadLine);
       setPaymentStatus(initialData.PaymentStatus);
       setDescription(initialData.Description);
-      setClientID(initialData.ClientId); // Use ClientId directly from initialData
+      setClientID(initialData.ClientId);
     }
   }, [mode, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!clientID || isNaN(clientID)) {
+  
+    if (!clientID || isNaN(Number(clientID))) {
       alert("Please select a valid client.");
       return;
     }
-
-    const selectedClient = data?.clientList.find(c => c.ClientId === clientID); 
-
-    if (!selectedClient?.SellerID) {
+  
+    const selectedClient = data?.clientList.find(c => c.ClientId === Number(clientID));
+  
+    if (!selectedClient) {
+      alert("Client not found.");
+      return;
+    }
+  
+    if (!selectedClient.SellerID) {
       alert("Selected client does not have an assigned seller.");
       return;
     }
-
+  
     const payload = {
       DealValue: dealValue,
       Comission: comission,
       DeadLine: deadLine,
       PaymentStatus: paymentStatus,
       Description: description,
-      ClientID: clientID, 
-      SellerID: selectedClient.SellerID, 
+      ClientID: Number(clientID),
+      SellerID: selectedClient.SellerID,
     };
-
+  
     console.log("Submitting payload:", payload);
-
+  
     setLoading(true);
-
+  
     try {
       if (mode === "add") {
         await addItem("deals", payload);
@@ -80,7 +85,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
