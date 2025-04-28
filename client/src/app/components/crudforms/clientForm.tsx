@@ -15,7 +15,7 @@ interface ClientFormProps {
 }
 
 const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) => {
-  const { addItem, modifyItem } = useData();
+  const { addItem, modifyItem, data } = useData();
 
   const [clientName, setClientName] = useState("");
   const [company, setCompany] = useState("");
@@ -44,10 +44,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Description: description,
       Telephone: telephone,
       Email: email,
-      ClientId: clientId, // ClientId as a number
+      ClientId: clientId,
     };
-
-    console.log("Submitting client payload:", payload);
 
     try {
       if (mode === "add") {
@@ -61,6 +59,10 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       alert("Failed to save client. Please try again.");
     }
   };
+
+  if (!data || !Array.isArray(data.clientList)) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
@@ -116,6 +118,25 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-2 border rounded"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Client</label>
+        <select
+          value={clientId ?? ""}
+          onChange={(e) => {
+            const value = e.target.value;
+            setClientId(value === "" ? undefined : Number(value));
+          }}
+          className="w-full p-2 border rounded"
+        >
+          <option value="">Select a client</option>
+          {data.clientList.map((client) => (
+            <option key={client.ClientId} value={client.ClientId}>
+              {client.ClientName}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="flex justify-end gap-2">
