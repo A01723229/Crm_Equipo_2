@@ -1,134 +1,115 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { useData } from "../../context/DataContext";
 
-interface ClientFormProps {
+interface ProductFormProps {
   mode: "add" | "edit";
   initialData?: {
-    ClientId?: number;
-    ClientName: string;
-    Company: string;
+    ProductID?: number;
+    Name: string;
     Description: string;
-    Telephone: string;
-    Email: string;
+    Category: string;
+    Price: number;
   };
   onClose: () => void;
 }
 
-const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) => {
+const ProductForm: React.FC<ProductFormProps> = ({ mode, initialData, onClose }) => {
   const { addItem, modifyItem } = useData();
 
-  const [clientName, setClientName] = useState("");
-  const [company, setCompany] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [email, setEmail] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
-      setClientName(initialData.ClientName);
-      setCompany(initialData.Company);
+      setName(initialData.Name);
       setDescription(initialData.Description);
-      setTelephone(initialData.Telephone);
-      setEmail(initialData.Email);
+      setCategory(initialData.Category);
+      setPrice(initialData.Price);
     }
   }, [mode, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
-      ClientName: clientName,
-      Company: company,
-      Description: description,
-      Telephone: telephone,
-      Email: email,
-    };
+    const productData = { Name: name, Description: description, Category: category, Price: price };
 
     try {
       if (mode === "add") {
-        await addItem("clients", payload);
-      } else if (mode === "edit" && initialData?.ClientId) {
-        await modifyItem("clients", String(initialData.ClientId), payload);
+        await addItem("products", productData);
+      } else if (mode === "edit" && initialData?.ProductID) {
+        await modifyItem("products", initialData.ProductID.toString(), productData);
       }
       onClose();
     } catch (error) {
-      console.error("Error submitting client form:", error);
-      alert("Failed to save client. Please try again.");
+      console.error("Failed to submit product form:", error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
-      <h2 className="text-lg font-bold text-gray-800">
-        {mode === "add" ? "Add New Client" : "Edit Client"}
-      </h2>
-
-      {/* Client Name */}
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700">Name</label>
+        <label className="block text-sm font-semibold mb-1">Product Name</label>
         <input
           type="text"
-          value={clientName}
-          onChange={(e) => setClientName(e.target.value)}
+          className="w-full p-2 border rounded"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
-          className="w-full p-2 border rounded"
         />
       </div>
-
-      {/* Company */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Company</label>
-        <input
-          type="text"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-      </div>
-
-      {/* Description */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-semibold mb-1">Description</label>
         <textarea
+          className="w-full p-2 border rounded"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 border rounded"
+          required
         />
       </div>
-
-      {/* Telephone */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Telephone</label>
+        <label className="block text-sm font-semibold mb-1">Category</label>
         <input
           type="text"
-          value={telephone}
-          onChange={(e) => setTelephone(e.target.value)}
           className="w-full p-2 border rounded"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
         />
       </div>
-
-      {/* Email */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Email</label>
+        <label className="block text-sm font-semibold mb-1">Price</label>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="number"
           className="w-full p-2 border rounded"
+          value={price}
+          onChange={(e) => setPrice(parseFloat(e.target.value))}
+          min="0"
+          step="0.01"
+          required
         />
       </div>
 
-      {/* Buttons */}
-      <div className="flex justify-end gap-2">
-        <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
+      <div className="flex justify-end space-x-2">
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+        >
           Cancel
         </button>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          {mode === "add" ? "Add Client" : "Save Changes"}
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
+          {mode === "add" ? "Add Product" : "Update Product"}
         </button>
       </div>
     </form>
   );
 };
 
-export default ClientForm;
+export default ProductForm;
