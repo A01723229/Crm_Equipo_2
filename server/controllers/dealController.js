@@ -43,6 +43,7 @@ exports.updateDeal = async (req, res) => {
 
 exports.deleteDeal = async (req, res) => {
   try {
+    console.log("Deleting deal with ID:", req.params.id);
     const pool = await poolPromise;
     await pool.request()
       .input("DealID", sql.Int, req.params.id)
