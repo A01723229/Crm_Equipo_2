@@ -2,7 +2,7 @@ const { sql, poolPromise } = require("../database/db");
 
 exports.addTask = async (req, res) => {
     try {
-      const { Title, Status, Priority, Description, DeadLine, Stage, DealID } = req.body;
+      const { Title, Status, Priority, Description, DeadLine, Stage, DealId } = req.body;
       const SellerID = req.user?.SellerID;
   
       if (!SellerID) {
@@ -17,7 +17,7 @@ exports.addTask = async (req, res) => {
         .input("Description", sql.VarChar, Description)
         .input("DeadLine", sql.Date, DeadLine)
         .input("Stage", sql.VarChar, Stage)
-        .input("DealID", sql.Int, DealID)
+        .input("DealID", sql.Int, DealId)
         .input("SellerID", sql.Int, SellerID)
         .execute("AddTask");
   
