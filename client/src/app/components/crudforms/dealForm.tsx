@@ -17,12 +17,12 @@ interface DealFormProps {
 
 const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const { addItem, modifyItem, data } = useData();
-
-  const [dealValue, setDealValue] = useState<number>(0);
-  const [comission, setComission] = useState<number>(0);
-  const [deadLine, setDeadLine] = useState<string>("");
-  const [paymentStatus, setPaymentStatus] = useState<string>("Pending");
-  const [description, setDescription] = useState<string>("");
+  
+  const [dealValue, setDealValue] = useState(0);
+  const [comission, setComission] = useState(0);
+  const [deadLine, setDeadLine] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("Pending");
+  const [description, setDescription] = useState("");
   const [clientID, setClientID] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
 
@@ -40,16 +40,8 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation check for ClientId and other fields
     if (!clientID || isNaN(Number(clientID))) {
       alert("Please select a valid client.");
-      return;
-    }
-
-    const selectedClient = data?.clientList.find((c) => c.ClientId === Number(clientID));
-
-    if (!selectedClient?.ClientId) {
-      alert("Selected client is invalid.");
       return;
     }
 
@@ -60,20 +52,19 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       PaymentStatus: paymentStatus,
       Description: description,
       ClientID: Number(clientID),
-      SellerID: selectedClient.SellerID, // This will be handled on the backend
     };
 
     console.log("Submitting payload:", payload);
-
+    
     setLoading(true);
 
     try {
       if (mode === "add") {
-        await addItem("deals", payload); // Add new deal
+        await addItem("deals", payload);
       } else if (mode === "edit" && initialData?.DealId) {
-        await modifyItem("deals", String(initialData.DealId), payload); // Modify existing deal
+        await modifyItem("deals", String(initialData.DealId), payload);
       }
-      onClose(); // Close the form after submission
+      onClose();
     } catch (error) {
       console.error("Error submitting deal form:", error);
       alert("Failed to save deal. Please try again.");
@@ -88,7 +79,6 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         {mode === "add" ? "Add New Deal" : "Edit Deal"}
       </h2>
 
-      {/* Deal Value */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Deal Value</label>
         <input
@@ -101,7 +91,6 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Commission */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Comission</label>
         <input
@@ -114,7 +103,6 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Deadline */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Deadline</label>
         <input
@@ -125,7 +113,6 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Payment Status */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Payment Status</label>
         <select
@@ -139,14 +126,13 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
-      {/* Client Dropdown */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Client</label>
         <select
           value={clientID ?? ""}
           onChange={(e) => {
             const value = e.target.value;
-            setClientID(value === "" ? undefined : value); // Only set ClientID
+            setClientID(value === "" ? undefined : value);
           }}
           className="w-full p-2 border rounded"
         >
@@ -159,7 +145,6 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
-      {/* Description */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Description</label>
         <textarea
@@ -169,7 +154,6 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Buttons */}
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
           Cancel
