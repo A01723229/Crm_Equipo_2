@@ -34,13 +34,13 @@ exports.addClient = async (req, res) => {
 
 exports.updateClient = async (req, res) => {
   try {
-    const { ClientName, Company, Description, Telephone, Email } = req.body;
+    const { ClientID, ClientName, Company, Description, Telephone, Email } = req.body;
 
-    console.log("UPDATE CLIENT REQUEST BODY:", { ClientName, Company, Description, Telephone, Email });
+    console.log("UPDATE CLIENT REQUEST BODY:", { ClientId, ClientName, Company, Description, Telephone, Email });
 
     const pool = await poolPromise;
     await pool.request()
-      .input("ClientID", sql.Int, req.params.id)
+      .input("ClientID", sql.Int, ClientID)
       .input("ClientName", sql.VarChar, ClientName)
       .input("Company", sql.VarChar, Company) 
       .input("Description", sql.VarChar, Description)
@@ -58,9 +58,10 @@ exports.updateClient = async (req, res) => {
 
 exports.deleteClient = async (req, res) => {
   try {
+    const { ClientID } = req.body;
     const pool = await poolPromise;
     await pool.request()
-      .input("ClientID", sql.Int, req.params.id)
+      .input("ClientID", sql.Int, ClientID)
       .execute("DeleteClient");
     res.json({ message: "Client deleted" });
   } catch (err) {
