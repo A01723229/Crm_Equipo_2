@@ -33,7 +33,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       setDescription(initialData.Description);
       setTelephone(initialData.Telephone);
       setEmail(initialData.Email);
-      setClientId(initialData.ClientId);
+      setClientId(initialData.ClientId); 
     }
   }, [mode, initialData]);
 
@@ -137,24 +137,26 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       </div>
 
       {/* Client Dropdown */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Client</label>
-        <select
-          value={clientId ?? ""}
-          onChange={(e) => {
-            const value = e.target.value;
-            setClientId(value === "" ? undefined : Number(value)); // Ensure value is a number
-          }}
-          className="w-full p-2 border rounded"
-        >
-          <option value="">Select a client</option>
-          {data.clientList.map((client) => (
-            <option key={client.ClientId} value={client.ClientId}>
-              {client.ClientName}
-            </option>
-          ))}
-        </select>
-      </div>
+      {mode === "edit" && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Client</label>
+          <select
+            value={clientId ?? ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              setClientId(value === "" ? undefined : Number(value)); // Ensure value is a number
+            }}
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select a client</option>
+            {data.clientList.map((client) => (
+              <option key={client.ClientId} value={client.ClientId}>
+                {client.ClientName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Buttons */}
       <div className="flex justify-end gap-2">

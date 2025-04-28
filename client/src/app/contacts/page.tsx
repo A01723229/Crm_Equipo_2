@@ -45,7 +45,7 @@ const CustomersPage = () => {
     if (selectedClient) {
       const confirmDelete = confirm("Are you sure you want to delete this client?");
       if (confirmDelete) {
-        await deleteItem("clients", selectedClient.ClientID.toString());
+        await deleteItem("clients", selectedClient.ClientId.toString());
         setSelectedClient(null);
       }
     } else {
