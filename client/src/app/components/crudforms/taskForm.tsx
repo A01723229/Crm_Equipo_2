@@ -42,14 +42,14 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!dealID || isNaN(Number(dealID))) {
       alert("Please select a valid deal before saving the task.");
       return;
     }
-  
+
     setLoading(true);
-  
+
     const payload = {
       Title: title,
       Status: status,
@@ -59,19 +59,23 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
       Stage: stage,
       DealId: Number(dealID),
     };
-  
+
     console.log("Submitting payload:", payload);
-  
-    if (mode === "add") {
-      await addItem("tasks", payload);
-    } else if (mode === "edit" && initialData?.TaskID) {
-      await modifyItem("tasks", String(initialData.TaskID), payload);
+
+    try {
+      if (mode === "add") {
+        await addItem("tasks", payload);
+      } else if (mode === "edit" && initialData?.TaskID) {
+        await modifyItem("tasks", String(initialData.TaskID), payload);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error submitting task form:", error);
+      alert("Failed to save task. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  
-    setLoading(false);
-    onClose();
   };
-  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-white rounded shadow-md">
@@ -79,7 +83,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         {mode === "add" ? "Add New Task" : "Edit Task"}
       </h2>
 
-      {/* Title */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Title</label>
         <input
@@ -91,7 +94,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Status */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Status</label>
         <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-2 border rounded text-gray-900">
@@ -101,7 +103,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
-      {/* Priority */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Priority</label>
         <select value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full p-2 border rounded text-gray-900">
@@ -111,7 +112,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
-      {/* Stage */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Stage</label>
         <select value={stage} onChange={(e) => setStage(e.target.value)} className="w-full p-2 border rounded text-gray-900">
@@ -124,7 +124,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
-      {/* Deadline */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Deadline</label>
         <input
@@ -135,18 +134,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Deal */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Deal</label>
         <select
           value={dealID ?? ""}
           onChange={(e) => {
             const value = e.target.value;
-            if (value === "") {
-              setDealID(undefined);
-            } else {
-              setDealID(value);
-            }
+            setDealID(value === "" ? undefined : value);
           }}
           className="w-full p-2 border rounded text-gray-900"
         >
@@ -159,7 +153,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         </select>
       </div>
 
-      {/* Description */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Description</label>
         <textarea
@@ -169,7 +162,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialData, onClose }) => {
         />
       </div>
 
-      {/* Buttons */}
       <div className="flex justify-end gap-2">
         <button
           type="button"
