@@ -58,10 +58,9 @@ exports.updateClient = async (req, res) => {
 
 exports.deleteClient = async (req, res) => {
   try {
-    const { ClientID } = req.body;
     const pool = await poolPromise;
     await pool.request()
-      .input("ClientID", sql.Int, ClientID)
+      .input("ClientID", sql.Int, req.params.id)
       .execute("DeleteClient");
     res.json({ message: "Client deleted" });
   } catch (err) {
