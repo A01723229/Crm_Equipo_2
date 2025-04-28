@@ -5,13 +5,13 @@ import { useData } from "../../context/DataContext";
 interface DealFormProps {
   mode: "add" | "edit";
   initialData?: {
-    DealID?: number;
+    DealId?: number;
     DealValue: number;
     Comission: number;
     DeadLine: string;
     PaymentStatus: string;
     Description: string;
-    ClientID: number;
+    ClientId: number;
     SellerID: number;
   };
   onClose: () => void;
@@ -35,7 +35,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       setDeadLine(initialData.DeadLine);
       setPaymentStatus(initialData.PaymentStatus);
       setDescription(initialData.Description);
-      setClientID(String(initialData.ClientID));
+      setClientID(String(initialData.ClientId));
     }
   }, [mode, initialData]);
 
@@ -47,7 +47,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       return;
     }
 
-    const selectedClient = data?.clientList.find(c => c.ClientID === Number(clientID));
+    const selectedClient = data?.clientList.find(c => c.ClientId === Number(clientID));
 
     if (!selectedClient?.SellerID) {
       alert("Selected client does not have an assigned seller.");
@@ -64,13 +64,15 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       SellerID: selectedClient.SellerID,
     };
 
+    console.log("Submitting payload:", payload);
+    
     setLoading(true);
 
     try {
       if (mode === "add") {
         await addItem("deals", payload);
-      } else if (mode === "edit" && initialData?.DealID) {
-        await modifyItem("deals", String(initialData.DealID), payload);
+      } else if (mode === "edit" && initialData?.DealId) {
+        await modifyItem("deals", String(initialData.DealId), payload);
       }
       onClose();
     } catch (error) {
@@ -146,7 +148,7 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         >
           <option value="">Select a client</option>
           {data?.clientList.map((client) => (
-            <option key={client.ClientID} value={String(client.ClientID)}>
+            <option key={client.ClientId} value={String(client.ClientId)}>
               {client.ClientName}
             </option>
           ))}
