@@ -46,7 +46,7 @@ const DealsPage = () => {
       const confirmDelete = confirm("Are you sure you want to delete this deal?");
       if (confirmDelete) {
         console.log("selectedDeal:", selectedDeal);
-        await deleteItem("deals", selectedDeal.DealID.toString());
+        await deleteItem("deals", selectedDeal.DealId.toString());
         setSelectedDeal(null);
       }
     } else {
