@@ -25,7 +25,8 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
   const [deadLine, setDeadLine] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("Pending");
   const [description, setDescription] = useState("");
-  const [clientID, setClientID] = useState<number | "">("");
+  const [clientID, setClientID] = useState<string | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (mode === "edit" && initialData) {
@@ -34,12 +35,17 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       setDeadLine(initialData.DeadLine);
       setPaymentStatus(initialData.PaymentStatus);
       setDescription(initialData.Description);
-      setClientID(initialData.ClientID);
+      setClientID(String(initialData.ClientID));
     }
   }, [mode, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!clientID || isNaN(Number(clientID))) {
+      alert("Please select a valid client.");
+      return;
+    }
 
     const selectedClient = data?.clientList.find(c => c.ClientID === Number(clientID));
 
@@ -58,13 +64,21 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       SellerID: selectedClient.SellerID,
     };
 
-    if (mode === "add") {
-      await addItem("deals", payload);
-    } else if (mode === "edit" && initialData?.DealID) {
-      await modifyItem("deals", String(initialData.DealID), payload);
-    }
+    setLoading(true);
 
-    onClose();
+    try {
+      if (mode === "add") {
+        await addItem("deals", payload);
+      } else if (mode === "edit" && initialData?.DealID) {
+        await modifyItem("deals", String(initialData.DealID), payload);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error submitting deal form:", error);
+      alert("Failed to save deal. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,13 +137,16 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
       <div>
         <label className="block text-sm font-medium text-gray-700">Client</label>
         <select
-          value={clientID}
-          onChange={(e) => setClientID(Number(e.target.value))}
+          value={clientID ?? ""}
+          onChange={(e) => {
+            const value = e.target.value;
+            setClientID(value === "" ? undefined : value);
+          }}
           className="w-full p-2 border rounded"
         >
           <option value="">Select a client</option>
           {data?.clientList.map((client) => (
-            <option key={client.ClientID} value={client.ClientID}>
+            <option key={client.ClientID} value={String(client.ClientID)}>
               {client.ClientName}
             </option>
           ))}
@@ -149,8 +166,8 @@ const DealForm: React.FC<DealFormProps> = ({ mode, initialData, onClose }) => {
         <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
           Cancel
         </button>
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          {mode === "add" ? "Add Deal" : "Save Changes"}
+        <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded">
+          {loading ? "Saving..." : mode === "add" ? "Add Deal" : "Save Changes"}
         </button>
       </div>
     </form>
