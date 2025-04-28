@@ -13,6 +13,7 @@ const postLogin = async (req, res) => {
   try {
     console.log("Login attempt for:", email);
 
+    // Fetch user from database by email
     const pool = await db.poolPromise;
     const result = await pool
       .request()
@@ -27,19 +28,22 @@ const postLogin = async (req, res) => {
       return res.status(401).json({ error: "Incorrect credentials." });
     }
 
+    // Compare hashed password
     const passwordMatch = await bcrypt.compare(password, seller.Password);
     if (!passwordMatch) {
       console.warn("Password mismatch.");
       return res.status(401).json({ error: "Incorrect credentials." });
     }
 
+    // Ensure JWT_SECRET exists in environment variables
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not defined in environment variables.");
     }
 
+    // Create JWT token
     const token = jwt.sign(
       {
-        SellerID: seller.SellerID,   // ✅ Correct field
+        SellerID: seller.SellerID,
         SellerName: seller.SellerName,
         Email: seller.Email,
         Role: seller.Role,
@@ -49,9 +53,10 @@ const postLogin = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // Set JWT token in a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // Use secure flag in production
       sameSite: "Strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
