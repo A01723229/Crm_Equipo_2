@@ -1,6 +1,6 @@
-'use client';
+// UserContext.tsx
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User } from "../interfaces/user";
+import { User } from "../interfaces/user"; // Ensure your interface includes SellerID, etc.
 
 interface UserContextType {
   user: User | null;
@@ -18,15 +18,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/me", { credentials: "include" });
+
         if (res.ok) {
           const userData = await res.json();
-          setUser({ ...userData, isLogin: true });
+
+          // Check if user is logged in based on server response
+          if (userData && userData.sellerName && userData.email) {
+            setUser({ ...userData, isLogin: true });
+          } else {
+            setUser(null); // If user data is incomplete, set null
+          }
         } else {
-          setUser(null);
+          setUser(null); // If the request fails, set user to null
         }
       } catch (err) {
         console.error("Failed to fetch user:", err);
-        setUser(null);
+        setUser(null); // Set user to null if error occurs
       } finally {
         setLoading(false);
       }
@@ -41,7 +48,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
     </UserContext.Provider>
   );
 }
-
 
 export function useUser() {
   const context = useContext(UserContext);
