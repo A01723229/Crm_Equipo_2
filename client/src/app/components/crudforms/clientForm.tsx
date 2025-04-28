@@ -33,7 +33,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       setDescription(initialData.Description);
       setTelephone(initialData.Telephone);
       setEmail(initialData.Email);
-      setClientId(initialData.ClientId); 
+      setClientId(initialData.ClientId);
     }
   }, [mode, initialData]);
 
@@ -41,8 +41,8 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation check for ClientId
-    if (clientId === undefined || isNaN(clientId)) {
+    // Validation check for ClientId (only required in 'edit' mode)
+    if (mode === "edit" && (clientId === undefined || isNaN(clientId))) {
       alert("Please select a valid client.");
       return;
     }
@@ -53,7 +53,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
       Description: description,
       Telephone: telephone,
       Email: email,
-      ClientId: clientId, // Pass ClientId as number
+      ClientId: clientId, // Pass ClientId only for 'edit'
     };
 
     try {
@@ -136,7 +136,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         />
       </div>
 
-      {/* Client Dropdown */}
+      {/* Client Dropdown (only in edit mode) */}
       {mode === "edit" && (
         <div>
           <label className="block text-sm font-medium text-gray-700">Client</label>
@@ -163,7 +163,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ mode, initialData, onClose }) =
         <button type="button" onClick={onClose} className="bg-gray-300 px-4 py-2 rounded">
           Cancel
         </button>
-        <button type="submit" disabled={false} className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
           {mode === "add" ? "Add Client" : "Save Changes"}
         </button>
       </div>
